@@ -1,0 +1,15 @@
+{
+  "contacts": {
+    "telegram": "/",
+    "viber": "/",
+    "linkedin": "/",
+    "instagram": "/",
+    "facebook": "https://www.facebook.com/",
+    "whatsapp": "/"
+  },
+  "contact": {
+    "phone": "+380501234567",
+    "email": "info@example.com",
+    "address": "Киев, Украина"
+  }
+}
