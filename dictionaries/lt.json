@@ -4,5 +4,26 @@
         "language": "Lietuvių",
         "darkMode": "Tamsus režimas",
         "lightMode": "Šviesus režimas"
+    },
+    "contacts": {
+        "title": "Susisiekti su mumis",
+        "desc": "Turite idėją ar klausimą? Padėsime rasti tinkamą sprendimą.",
+        "phone": "Telefonas",
+        "email": "El. paštas",
+        "button": "Rašykite mums"
+    },
+    "ModalOrder": {
+        "cta": "Užsakyti svetainę",
+        "title": "Palikite prašymą",
+        "phName": "Jūsų vardas",
+        "phEmail": "El. paštas arba Telegram",
+        "phTextarea": "Trumpai apibūdinkite, ko reikia",
+        "success": "Ačiū! Mes susisieksime su jumis greitai.",
+        "error": "Klaida. Pabandykite dar kartą.",
+        "btn": "Siųsti",
+        "loding": "Siunčiama..."
+    },
+    "footer": {
+        "text": "pagaminta su"
     }
 }

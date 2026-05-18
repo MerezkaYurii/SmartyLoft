@@ -4,5 +4,26 @@
         "language": "English",
         "darkMode": "Dark Mode",
         "lightMode": "Light Mode"
+    },
+    "contacts": {
+        "title": "Contact Us",
+        "desc": "Have an idea or a question? We'll help you find the right solution.",
+        "phone": "Phone",
+        "email": "Email",
+        "button": "Write to us"
+    },
+    "ModalOrder": {
+        "cta": "Order a Website",
+        "title": "Leave a request",
+        "phName": "Your name",
+        "phEmail": "Email or Telegram",
+        "phTextarea": "Briefly describe what is needed",
+        "success": "Thank you! We will be in touch soon.",
+        "error": "Error. Please try again.",
+        "btn": "Send",
+        "loding": "Sending..."
+    },
+    "footer": {
+        "text": "made with"
     }
 }

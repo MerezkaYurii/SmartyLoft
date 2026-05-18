@@ -1,5 +1,6 @@
 
 
+
 'use client';
 import { useEffect, useState } from 'react';
 import { Dictionary } from '../i18n-config';
@@ -51,7 +52,7 @@ export default function ThemeSwitcher({ dict }: { dict: Dictionary }) {
             }}
             className="flex items-center gap-1  bg-[#0f3995] text-white rounded-full border border-[#0f3995] hover:bg-[#0f3995] transition-colors duration-300"
         >
-            <svg className="w-5 h-5 fill-current text-white transition-colors duration-500">
+            <svg className="w-5 h-5 fill-current text-whitetransition-colors duration-500">
                 {theme === 'light' ? (
                     <use href="/spriteSL.svg#icon-moon-svgrepo-com" />
 

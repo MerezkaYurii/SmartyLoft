@@ -4,5 +4,26 @@
         "language": "Polski",
         "darkMode": "Tryb ciemny",
         "lightMode": "Tryb jasny"
+    },
+    "contacts": {
+        "title": "Skontaktuj się z nami",
+        "desc": "Masz pomysł lub pytanie? Pomożemy znaleźć odpowiednie rozwiązanie.",
+        "phone": "Telefon",
+        "email": "E-mail",
+        "button": "Napisz do nas"
+    },
+    "ModalOrder": {
+        "cta": "Zamów stronę internetową",
+        "title": "Zostaw prośbę",
+        "phName": "Twoje imię",
+        "phEmail": "E-mail lub Telegram",
+        "phTextarea": "Krótko opisz, co jest potrzebne",
+        "success": "Dziękujemy! Skontaktujemy się z Tobą wkrótce.",
+        "error": "Błąd. Spróbuj ponownie.",
+        "btn": "Wyślij",
+        "loding": "Wysyłanie..."
+    },
+    "footer": {
+        "text": "zrobione z"
     }
 }
