@@ -1,16 +1,20 @@
 
 
 import data from "../data/siteData.json";
+import { useDictionary } from "../hooks/useDictionary";
 import ModalOrder from "./ModalOrder";
-import { Dictionary } from "../i18n-config";
 
 
 
 
-export default function Contacts({ dict }: { dict: Dictionary }) {
+
+export default function Contacts() {
+
+    const dict = useDictionary();
     const dataContacts = data.dataContacts;
     const dataSocialLinks = data.dataSocialLinks;
     const mailTo = `mailto:${dataContacts.email}?subject=Заказ%20сайта`;
+    if (!dict) return null;
     return (
         <section id="contact" className="px-2 sm:px-4 lg:px-6 ">
             <div className="container mx-auto  py-10 text-center  bg-gray-400/80 dark:bg-gray-900/80 rounded-2xl mb-[15px]">
@@ -111,7 +115,7 @@ export default function Contacts({ dict }: { dict: Dictionary }) {
                 </div>
 
 
-                <ModalOrder dict={dict} buttonLabel={dict.contacts.button} />
+                <ModalOrder buttonLabel={dict.contacts.button} />
             </div>
         </section>
     );

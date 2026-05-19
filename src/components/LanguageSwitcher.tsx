@@ -5,33 +5,22 @@
 import { useRouter, usePathname } from "next/navigation";
 import { Locale } from "../i18n-config"; // Проверив структуру, импортируем тип отсюда
 import { useEffect, useRef, useState } from "react";
+import { useDictionary } from "../hooks/useDictionary";
 
-export default function LanguageSwitcher({ dict }: { dict: any }) {
+export default function LanguageSwitcher() {
+    const dict = useDictionary();
     const router = useRouter();
     const pathname = usePathname();
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    // Определяем текущий язык на основе URL (первый сегмент пути, например /en или /pl)
     const currentLocale = (pathname?.split("/")[1] || "en") as Locale;
 
-    // Функция для генерации нового пути при смене языка
-    // const redirectedPathname = (locale: Locale) => {
-    //     if (!pathname) return "/";
-    //     const segments = pathname.split("/");
-    //     segments[1] = locale; // Заменяем языковой сегмент
-    //     return segments.join("/");
-    // };
 
-
-
-
-    // Функция для генерации нового пути при смене языка
     const redirectedPathname = (locale: Locale) => {
         if (!pathname) return "/";
 
         const segments = pathname.split("/");
-        // Проверяем, является ли первый сегмент существующей локалью
         const knownLocales: Locale[] = ["en", "pl", "lt", "ua"];
         const hasLocale = knownLocales.includes(segments[1] as Locale);
 
@@ -67,7 +56,7 @@ export default function LanguageSwitcher({ dict }: { dict: any }) {
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
-
+    if (!dict) return null;
     return (
         <div className="relative inline-block text-left" ref={dropdownRef}>
             <button

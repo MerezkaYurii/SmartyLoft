@@ -4,6 +4,8 @@ import '../globals.css';
 import Header from '../../components/Header';
 import { getDictionary } from '../../lib/get-dictionary';
 import Footer from '@/src/components/Footer';
+import StoreProvider from '@/src/redax/StoreProvider';
+import DictionaryInitializer from '@/src/redax/DictionaryInitializer';
 
 export const metadata: Metadata = {
   title: 'Smartyloft',
@@ -30,12 +32,16 @@ export default async function RootLayout({
   return (
     <html lang={lang}>
       <body className="min-h-screen flex flex-col">
-        <Header dict={dict} />
-        <main className="grow pt-[70px]">{children}</main>
+        <StoreProvider>
+          <DictionaryInitializer dictionary={dict} />
 
-        <footer className=" relative z-20 bg-white/70 dark:bg-black/70 backdrop-blur-sm">
-          <Footer dict={dict} />
-        </footer>
+          <Header />
+          <main className="grow pt-[70px]">{children}</main>
+
+          <footer className=" relative z-20 bg-white/70 dark:bg-black/70 backdrop-blur-sm">
+            <Footer dict={dict} />
+          </footer>
+        </StoreProvider>
       </body>
     </html>
   );

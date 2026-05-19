@@ -2,15 +2,18 @@
 
 
 
+import { useDictionary } from '../hooks/useDictionary';
 import LanguageSwitcher from './LanguageSwitcher';
 import ThemeToggle from './ThemeToggle';
 import Link from 'next/link';
-import { Dictionary } from '../i18n-config';
 
 
 
-export default function Header({ dict }: { dict: Dictionary }) {
+
+export default function Header() {
     // получаем t из пропсов
+
+
 
     return (
         <header className="fixed top-0 left-0 w-full z-50 bg-gray-400/80 shadow-sm dark:bg-gray-900/70 dark:text-white transition-colors duration-500 ">
@@ -28,8 +31,8 @@ export default function Header({ dict }: { dict: Dictionary }) {
                     Contacts
                 </Link>
 
-                <ThemeToggle dict={dict} />
-                <LanguageSwitcher dict={dict} />
+                <ThemeToggle />
+                <LanguageSwitcher />
             </div>
         </header>
     );

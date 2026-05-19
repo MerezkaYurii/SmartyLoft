@@ -2,13 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { Dictionary } from "../i18n-config";
+import { useDictionary } from "../hooks/useDictionary";
 
 interface ModalOrderProps {
-  dict: Dictionary;
+
   buttonLabel?: string;
 }
 
-export default function ModalOrder({ dict, buttonLabel }: ModalOrderProps) {
+export default function ModalOrder({ buttonLabel }: ModalOrderProps) {
+  const dict = useDictionary();
+
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -66,7 +69,7 @@ export default function ModalOrder({ dict, buttonLabel }: ModalOrderProps) {
     setIsOpen(false);
     setStatus(null);
   };
-
+  if (!dict) return null;
   return (
     <>
       {/* Кнопка */}

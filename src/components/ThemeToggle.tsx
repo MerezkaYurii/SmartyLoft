@@ -1,13 +1,13 @@
-
-
-
 'use client';
 import { useEffect, useState } from 'react';
-import { Dictionary } from '../i18n-config';
+
+import { useDictionary } from '../hooks/useDictionary';
 
 type Theme = 'light' | 'dark';
 
-export default function ThemeSwitcher({ dict }: { dict: Dictionary }) {
+export default function ThemeSwitcher() {
+    const dict = useDictionary();
+
     const [theme, setTheme] = useState<Theme>(() => {
         if (typeof window !== 'undefined') {
             const savedTheme = localStorage.getItem('theme') as Theme | null;
@@ -37,11 +37,8 @@ export default function ThemeSwitcher({ dict }: { dict: Dictionary }) {
             return newTheme;
         });
     };
-
+    if (!dict) return null;
     return (
-
-
-
         <button
             onClick={toggleTheme}
             style={{
@@ -55,19 +52,14 @@ export default function ThemeSwitcher({ dict }: { dict: Dictionary }) {
             <svg className="w-5 h-5 fill-current text-whitetransition-colors duration-500">
                 {theme === 'light' ? (
                     <use href="/spriteSL.svg#icon-moon-svgrepo-com" />
-
-
                 ) : (
                     <use href="/spriteSL.svg#icon-sun" />
                 )}
             </svg>
 
             <span className="text-sm font-medium">
-                {theme === "light" ? dict.header.darkMode : dict.header.lightMode}
+                {theme === 'light' ? dict.header.darkMode : dict.header.lightMode}
             </span>
-
-
         </button>
-
     );
 }
