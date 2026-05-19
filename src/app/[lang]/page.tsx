@@ -1,9 +1,22 @@
+
+import HomePageSlider from "@/src/components/HomePageSlider";
+import TestComponent from "@/src/components/TestComponent";
+
+
+
 export default function Home() {
   return (
-    <main className="flex flex-col items-center mt-18">
+
+    <main className="flex flex-col items-center ">
       <div className="container w-full max-w-7x bg-red-200">
-        <h1 className="text-black font-bold"> HOME PAGE</h1>
+        <HomePageSlider />
+        <TestComponent />
+        <TestComponent />
+
       </div>
     </main>
+
   );
 }
+
+
