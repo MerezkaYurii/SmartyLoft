@@ -3,7 +3,8 @@
         "phone": "+3805077777777",
         "language": "Polski",
         "darkMode": "Tryb ciemny",
-        "lightMode": "Tryb jasny"
+        "lightMode": "Tryb jasny",
+        "contacts": "Kontakty"
     },
     "contacts": {
         "title": "Skontaktuj się z nami",
@@ -22,6 +23,10 @@
         "error": "Błąd. Spróbuj ponownie.",
         "btn": "Wyślij",
         "loding": "Wysyłanie..."
+    },
+    "HomePageSlider": {
+        "title": "Meble designerskie i kompleksy roślinne.",
+        "desc": "Estetyka loftu i żywa natura w Twoim domu."
     },
     "footer": {
         "text": "zrobione z"

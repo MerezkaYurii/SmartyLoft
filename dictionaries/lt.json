@@ -3,7 +3,8 @@
         "phone": "+380501234567",
         "language": "Lietuvių",
         "darkMode": "Tamsus režimas",
-        "lightMode": "Šviesus režimas"
+        "lightMode": "Šviesus režimas",
+        "contacts": "Kontaktai"
     },
     "contacts": {
         "title": "Susisiekti su mumis",
@@ -22,6 +23,10 @@
         "error": "Klaida. Pabandykite dar kartą.",
         "btn": "Siųsti",
         "loding": "Siunčiama..."
+    },
+    "HomePageSlider": {
+        "title": "Dizainerio baldai ir augalų kompleksai.",
+        "desc": "Lofto estetika ir gyva gamta jūsų namuose."
     },
     "footer": {
         "text": "pagaminta su"

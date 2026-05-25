@@ -3,7 +3,8 @@
         "phone": "+380501234567",
         "language": "English",
         "darkMode": "Dark Mode",
-        "lightMode": "Light Mode"
+        "lightMode": "Light Mode",
+             "contacts": "Contacts"
     },
     "contacts": {
         "title": "Contact Us",
@@ -22,6 +23,10 @@
         "error": "Error. Please try again.",
         "btn": "Send",
         "loding": "Sending..."
+    },
+    "HomePageSlider": {
+        "title": "Designer furniture and plant complexes.",
+        "desc": "Aesthetics of loft and living nature in your home."
     },
     "footer": {
         "text": "made with"

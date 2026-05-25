@@ -20,6 +20,8 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // Пропускаем статику, api и файлы с расширениями
-  matcher: ['/((?!api|_next|.*\\..*).*)'],
+  // Игнорируем api, _next статику, favicon и любые файлы популярных форматов картинок
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'
+  ],
 };

@@ -1,7 +1,8 @@
-
+"use client";
 
 import data from "../data/siteData.json";
 import { useDictionary } from "../hooks/useDictionary";
+
 import ModalOrder from "./ModalOrder";
 
 
@@ -16,8 +17,8 @@ export default function Contacts() {
     const mailTo = `mailto:${dataContacts.email}?subject=Заказ%20сайта`;
     if (!dict) return null;
     return (
-        <section id="contact" className="px-2 sm:px-4 lg:px-6 ">
-            <div className="container mx-auto  py-10 text-center  bg-gray-400/80 dark:bg-gray-900/80 rounded-2xl mb-[15px]">
+        <section id="contact" className="px-2 py-2 sm:px-4 sm:py-4 lg:px-6 lg:py-6 ">
+            <div className="container mx-auto  py-10 text-center  bg-[#F5F3EF] dark:bg-[#2A2B2B] rounded-2xl mb-[15px]">
                 <h2 className="text-lg sm:text-xl md:text-2xl  font-bold mb-3 dark:text-white ">
                     {dict.contacts.title}
                 </h2>
