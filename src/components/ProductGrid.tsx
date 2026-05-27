@@ -27,7 +27,7 @@ export default async function ProductGrid({ currentLocale }: ProductGridProps) {
 
   return (
     <section className="px-2 py-0.5 sm:px-4 sm:py-1 lg:px-6 lg:py-2 ">
-      <div className="container mx-auto  py-2 text-center  bg-[#f5f5ef] dark:bg-[#2A2B2B] rounded-2xl ">
+      <div className="container mx-auto  py-2 text-center  bg-[#EAE6DF] dark:bg-[#2A2B2B] rounded-2xl ">
         {/* Заголовок секции */}
         <h2 className="text-xl sm:text-2xl lg:text-3xl  italic font-bold text-left pl-10 text-gray-900 dark:text-white  ">
           {dict.ProductGrid.title}

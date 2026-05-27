@@ -33,7 +33,11 @@
     "title": "Our new products:",
      "button": "More details"
   },
-
+"ProductPage": {
+  "back": "Back to home",
+  "description": "Description",
+  "buy": "Buy in 1 click"
+},
   "footer": {
     "text": "made with"
    

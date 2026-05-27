@@ -32,6 +32,11 @@
     "title": "Nasze nowe produkty:",
     "button": "Więcej informacji"
   },
+  "ProductPage": {
+  "back": "Wróć do strony głównej",
+  "description": "Opis",
+  "buy": "Kup w 1 kliknięciu"
+},
     "footer": {
         "text": "zrobione z"
     }

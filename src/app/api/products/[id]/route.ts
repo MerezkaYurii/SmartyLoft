@@ -39,7 +39,7 @@ export async function PUT(request: Request, { params }: RouteParams) {
     const { id } = await params;
 
     const body = await request.json();
-    const { title, price, sku, images, description } = body;
+    const { title, price, sku, images, description, size } = body;
 
     if (!title || !price) {
       return NextResponse.json(
@@ -57,6 +57,7 @@ export async function PUT(request: Request, { params }: RouteParams) {
         sku: sku || '',
         images: Array.isArray(images) ? images : [],
         description: description || 'Временное описание',
+        size: Array.isArray(size) ? size : [],
       },
       { new: true, runValidators: true }, // new: true вернет уже обновленный документ
     );

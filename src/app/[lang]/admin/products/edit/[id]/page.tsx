@@ -20,6 +20,9 @@ export default function EditProductPage({ params }: PageProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [images, setImages] = useState<string[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [height, setHeight] = useState('');
+  const [width, setWidth] = useState('');
+  const [depth, setDepth] = useState('');
 
   // Загружаем данные товара
   useEffect(() => {
@@ -35,6 +38,18 @@ export default function EditProductPage({ params }: PageProps) {
           setPrice(String(product.price));
           setSku(product.sku || '');
           setImages(product.images || []);
+
+          // Парсим размеры из строки "Высота: 50 см, Ширина: 100 см, Глубина: 30 см"
+          if (product.size && Array.isArray(product.size)) {
+            const sizeString = product.size.join(', ');
+            const heightMatch = sizeString.match(/Высота:\s*([^,]+)/);
+            const widthMatch = sizeString.match(/Ширина:\s*([^,]+)/);
+            const depthMatch = sizeString.match(/Глубина:\s*([^,]+)/);
+
+            if (heightMatch) setHeight(heightMatch[1].trim());
+            if (widthMatch) setWidth(widthMatch[1].trim());
+            if (depthMatch) setDepth(depthMatch[1].trim());
+          }
         } else {
           alert('Товар не найден в базе данных');
           router.push(`/${lang}/admin/products`);
@@ -108,6 +123,12 @@ export default function EditProductPage({ params }: PageProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
+
+    const sizeArray = [];
+    if (height) sizeArray.push(`Высота: ${height}`);
+    if (width) sizeArray.push(`Ширина: ${width}`);
+    if (depth) sizeArray.push(`Глубина: ${depth}`);
+
     try {
       const res = await fetch(`/api/products/${id}`, {
         method: 'PUT',
@@ -173,6 +194,51 @@ export default function EditProductPage({ params }: PageProps) {
             onChange={(e) => setSku(e.target.value)}
             className="w-full p-2 bg-gray-800 border border-gray-700 rounded-md"
           />
+        </div>
+
+        {/* Габаритные размеры */}
+        <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-200 dark:border-gray-700 mb-6">
+          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-3">
+            Габаритные размеры (например: 50 см)
+          </h3>
+          <div className="grid grid-cols-3 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                Высота
+              </label>
+              <input
+                type="text"
+                value={height}
+                onChange={(e) => setHeight(e.target.value)}
+                placeholder="50 см"
+                className="w-full p-2.5 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                Ширина
+              </label>
+              <input
+                type="text"
+                value={width}
+                onChange={(e) => setWidth(e.target.value)}
+                placeholder="100 см"
+                className="w-full p-2.5 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                Глубина
+              </label>
+              <input
+                type="text"
+                value={depth}
+                onChange={(e) => setDepth(e.target.value)}
+                placeholder="30 см"
+                className="w-full p-2.5 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white"
+              />
+            </div>
+          </div>
         </div>
 
         {/* Галерея товара */}

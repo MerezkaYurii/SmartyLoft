@@ -32,6 +32,11 @@
     "title": "Mūsų nauji produktai:",
      "button": "Daugiau informacijos"
   },
+  "ProductPage": {
+    "back": "Atgal į pagrindinį puslapį",
+    "description": "Aprašymas",
+    "buy": "Pirkti 1 paspaudimu"
+  },
     "footer": {
         "text": "pagaminta su"
     }

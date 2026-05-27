@@ -8,6 +8,8 @@ export interface IProduct extends Document {
   price: string;
   images: string[];
   sku?: string;
+  category?: string;
+  size?: string[];
   createdAt: Date;
 }
 
@@ -20,6 +22,8 @@ const ProductSchema: Schema = new Schema(
     price: { type: String, required: true },
     sku: { type: String, default: '' },
     images: { type: [String], default: [] },
+    category: { type: String, default: '' },
+    size: { type: [String], default: [] },
   },
   {
     timestamps: true, // Автоматически добавит поля createdAt и updatedAt
