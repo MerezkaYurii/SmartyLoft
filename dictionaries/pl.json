@@ -28,6 +28,10 @@
         "title": "Meble designerskie i kompleksy roślinne.",
         "desc": "Estetyka loftu i żywa natura w Twoim domu."
     },
+    "ProductGrid": {
+    "title": "Nasze nowe produkty:",
+    "button": "Więcej informacji"
+  },
     "footer": {
         "text": "zrobione z"
     }

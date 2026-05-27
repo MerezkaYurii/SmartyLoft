@@ -5,7 +5,7 @@ import TestComponent from '@/src/components/TestComponent';
 export default async function Home({
   params,
 }: {
-  params: Promise<{ lang: string }>;
+  params: Promise<{ lang: 'en' | 'ua' | 'pl' | 'lt' }>;
 }) {
   const { lang } = await params;
   return (

@@ -28,6 +28,10 @@
         "title": "Dizainerio baldai ir augalų kompleksai.",
         "desc": "Lofto estetika ir gyva gamta jūsų namuose."
     },
+     "ProductGrid": {
+    "title": "Mūsų nauji produktai:",
+     "button": "Daugiau informacijos"
+  },
     "footer": {
         "text": "pagaminta su"
     }

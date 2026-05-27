@@ -1,4 +1,3 @@
-import { productsData } from '@/src/data/productsData';
 import Product from '@/src/DataBase/models/Product';
 import { initMongoConnection } from '@/src/lib/mongoose';
 import Image from 'next/image';

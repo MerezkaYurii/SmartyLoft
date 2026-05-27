@@ -64,7 +64,7 @@ export default function LanguageSwitcher() {
           paddingTop: '2px',
           paddingBottom: '3px',
         }}
-        className="flex items-center gap-1  bg-[#0f3995] text-white rounded-full border border-[#0f3995] hover:bg-[#0f3995]/80  transition-colors duration-300"
+        className="flex items-center gap-1  bg-[#0f3995] border-[#0f3995] hover:bg-[#0f3995]/80 text-white rounded-full border   transition-colors duration-300"
       >
         <svg
           className="w-5 h-5 fill-white stroke-none "

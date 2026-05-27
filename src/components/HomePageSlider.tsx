@@ -51,10 +51,8 @@ export default function HomePageSlider() {
               index === currentIndex ? 'opacity-100' : 'opacity-0'
             }`}
           >
-            {/* Замените src на свои реальные фото позже */}
             <div className="relative h-full w-full">
               <div className="absolute inset-0 bg-black/30 z-10" />{' '}
-              {/* Затемнение для текста */}
               <Image
                 src={slide.image}
                 alt={slide.title}
@@ -119,14 +117,14 @@ export default function HomePageSlider() {
         </div>
         <div className="absolute  left-1/2 -translate-x-1/2  bottom-4 z-30">
           <div className="flex items-center flex-col gap-1">
-            <svg className="w-60 h-16 ">
+            <svg className="w-40 h-10 sm:w-50 sm:h-12 lg:w-60 lg:h-16 ">
               <use href="/spriteSL.svg#icon-Logo-smartyloft-white" />
             </svg>
-            <p className="text-4xl font-sans italic text-white whitespace-nowrap ">
+            <p className="text-xl sm:text-2xl lg:text-4xl font-sans italic text-white whitespace-nowrap ">
               {dict.HomePageSlider.title}
             </p>
 
-            <p className="text-4xl text-center  font-semibold italic text-green-500 whitespace-nowrap">
+            <p className=" text-xl sm:text-2xl lg:text-4xl text-center  font-semibold italic text-green-500 whitespace-nowrap">
               {dict.HomePageSlider.desc}
             </p>
           </div>

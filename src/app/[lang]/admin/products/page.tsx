@@ -21,7 +21,7 @@ export default function AdminProductsPage() {
     async function fetchProducts() {
       setLoading(true);
       try {
-        const res = await fetch('/api/products'); // Твой существующий эндпоинт получения товаров
+        const res = await fetch('/api/products');
         if (res.ok) {
           const data = await res.json();
           setProducts(data);
@@ -35,9 +35,8 @@ export default function AdminProductsPage() {
     fetchProducts();
   }, []);
 
-  // Функция удаления товара
+  // 2. Функция удаления товара
   const handleDelete = async (id: string, title: string) => {
-    // Спрашиваем подтверждение перед удалением
     if (!confirm(`Вы уверены, что хотите удалить товар "${title}"?`)) return;
 
     try {
@@ -47,7 +46,6 @@ export default function AdminProductsPage() {
 
       if (res.ok) {
         alert('Товар успешно удален');
-        // Обновляем стейт, убирая удаленный товар из списка без перезагрузки страницы
         setProducts((prev) => prev.filter((p) => p._id !== id));
       } else {
         const errData = await res.json();
@@ -59,7 +57,10 @@ export default function AdminProductsPage() {
     }
   };
 
-  if (loading) return <p className="p-6">Загрузка товаров...</p>;
+  // Выносим экран загрузки на самый верх, убирая кашу из разметки ниже
+  if (loading) {
+    return <p className="text-center p-6 text-gray-500">Загрузка товаров...</p>;
+  }
 
   return (
     <div className="container mx-auto p-6 max-w-6xl">
@@ -75,16 +76,14 @@ export default function AdminProductsPage() {
         </Link>
       </div>
 
-      {loading ? (
-        <p className="text-center text-gray-500">Загрузка товаров...</p>
-      ) : products.length === 0 ? (
+      {products.length === 0 ? (
         <p className="text-center text-gray-500">Товаров пока нет.</p>
       ) : (
         <div className="bg-white dark:bg-gray-900 shadow rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-semibold border-b border-gray-200 dark:border-gray-800">
-                <th className="p-4">Фото</th>
+                <th className="p-4">Foto</th>
                 <th className="p-4">Название</th>
                 <th className="p-4">Артикул (SKU)</th>
                 <th className="p-4">Цена</th>
@@ -92,42 +91,78 @@ export default function AdminProductsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-800 text-gray-900 dark:text-gray-100 text-sm">
-              {products.map((product) => (
-                <tr
-                  key={product._id}
-                  className="hover:bg-gray-50 dark:hover:bg-gray-800/50"
-                >
-                  <td className="p-4">
-                    <div className="w-12 h-12 relative overflow-hidden rounded-md bg-gray-100">
-                      <Image
-                        src={product.images?.[0] || '/photo1.jpg'}
-                        alt={product.title}
-                        width={48}
-                        height={48}
-                        className="w-full h-full object-cover"
-                        priority={false} // Картинки в таблице можно грузить лениво
-                      />
-                    </div>
-                  </td>
-                  <td className="p-4 font-medium">{product.title}</td>
-                  <td className="p-4 text-gray-500">{product.sku || '—'}</td>
-                  <td className="p-4 font-semibold">{product.price} грн</td>
-                  <td className="p-4 text-right space-x-2">
-                    <Link
-                      href={`/admin/products/edit/${product._id}`}
-                      className="inline-block px-3 py-1 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 rounded font-medium text-xs transition-colors"
-                    >
-                      Редактировать
-                    </Link>
-                    <button
-                      onClick={() => handleDelete(product._id, product.title)}
-                      className="text-red-900 hover:text-red-600 font-medium transition-colors"
-                    >
-                      Удалить
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {products.map((product) => {
+                // Исправлено: гарантируем, что src всегда строка, даже если картинок нет
+                const imageSrc =
+                  product.images && product.images.length > 0
+                    ? product.images[0]
+                    : '/photo1.jpg';
+
+                return (
+                  <tr
+                    key={product._id}
+                    className="hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                  >
+                    <td className="p-4">
+                      <div className="w-12 h-12 relative overflow-hidden rounded-md bg-gray-100">
+                        {(() => {
+                          // Определяем дефолтную заглушку, если файлов нет
+                          const fileSrc =
+                            product.images && product.images.length > 0
+                              ? product.images[0]
+                              : '/photo1.jpg';
+
+                          // Проверяем, является ли файл видеороликом (по расширению в ссылке)
+                          const isVideo = fileSrc.match(
+                            /\.(mp4|webm|ogg|mov)($|\?)/i,
+                          );
+
+                          if (isVideo) {
+                            return (
+                              <video
+                                src={fileSrc}
+                                className="w-full h-full object-cover"
+                                muted
+                                playsInline
+                                preload="metadata"
+                              />
+                            );
+                          }
+
+                          // Если это обычное изображение
+                          return (
+                            <Image
+                              src={fileSrc}
+                              alt={product.title}
+                              width={48}
+                              height={48}
+                              className="w-full h-full object-cover"
+                              priority={false}
+                            />
+                          );
+                        })()}
+                      </div>
+                    </td>
+                    <td className="p-4 font-medium">{product.title}</td>
+                    <td className="p-4 text-gray-500">{product.sku || '—'}</td>
+                    <td className="p-4 font-semibold">{product.price} грн</td>
+                    <td className="p-4 text-right space-x-2">
+                      <Link
+                        href={`/admin/products/edit/${product._id}`}
+                        className="inline-block px-3 py-1 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 rounded font-medium text-xs transition-colors"
+                      >
+                        Редактировать
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(product._id, product.title)}
+                        className="text-red-900 hover:text-red-600 font-medium transition-colors"
+                      >
+                        Удалить
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
