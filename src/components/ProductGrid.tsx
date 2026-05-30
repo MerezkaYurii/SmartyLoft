@@ -69,7 +69,11 @@ export default async function ProductGrid({ currentLocale }: ProductGridProps) {
                   return (
                     <Image
                       src={fileSrc}
-                      alt={product.title}
+                      alt={
+                        product.title[currentLocale] ||
+                        product.title['ua'] ||
+                        ''
+                      }
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className="object-cover transition-transform duration-500 hover:scale-105"
@@ -82,10 +86,12 @@ export default async function ProductGrid({ currentLocale }: ProductGridProps) {
               {/* Контент карточки */}
               <div className="p-6 flex flex-col flex-grow: 1">
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                  {product.title}
+                  {product.title[currentLocale] || product.title['ua'] || ''}
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 flex-grow: 1">
-                  {product.description}
+                  {product.description[currentLocale] ||
+                    product.description['ua'] ||
+                    ''}
                 </p>
 
                 {/* Нижняя часть: Цена + Кнопка */}

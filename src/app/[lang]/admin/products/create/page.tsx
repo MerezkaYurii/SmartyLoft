@@ -1,14 +1,24 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function CreateProductPage() {
   const router = useRouter();
-
+  const params = useParams(); // Получаем параметры из URL
+  const lang = params.lang;
+  // Стейт для выбора активной языковой вкладки в форме (по умолчанию 'ua')
+  const [activeLang, setActiveLang] = useState<'ua' | 'pl' | 'en' | 'lt'>('ua');
   // Стейты для полей товара
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState({ ua: '', pl: '', en: '', lt: '' });
+  const [description, setDescription] = useState({
+    ua: '',
+    pl: '',
+    en: '',
+    lt: '',
+  });
   const [price, setPrice] = useState('');
   const [sku, setSku] = useState('');
   const [height, setHeight] = useState('');
@@ -19,6 +29,15 @@ export default function CreateProductPage() {
   const [mediaUrls, setMediaUrls] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  // Функции для удобного обновления конкретного языка
+  const handleTitleChange = (lang: string, value: string) => {
+    setTitle((prev) => ({ ...prev, [lang]: value }));
+  };
+
+  const handleDescriptionChange = (lang: string, value: string) => {
+    setDescription((prev) => ({ ...prev, [lang]: value }));
+  };
 
   // Обработчик загрузки файлов (можно выбрать один или несколько)
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,12 +62,14 @@ export default function CreateProductPage() {
           // Добавляем новую ссылку в массив
           setMediaUrls((prev) => [...prev, data.url]);
         } else {
-          alert(`Ошибка при загрузке файла: ${file.name}`);
+          alert(`Loading error / Помилка завантаження: ${file.name}`);
         }
       }
     } catch (error) {
-      console.error('Ошибка загрузки файлов:', error);
-      alert('Произошла ошибка при отправке файлов на сервер');
+      console.error('Loading error / Помилка завантаження:', error);
+      alert(
+        'An error occurred while sending files to the server / Помилка при відправці файлів на сервер',
+      );
     } finally {
       setUploading(false);
     }
@@ -62,7 +83,8 @@ export default function CreateProductPage() {
   // Сохранение всего товара в базу данных
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title || !price) return alert('Название и цена обязательны!');
+    if (!title || !price)
+      return alert('Name and price are required! / Назва та ціна обов`язкові!');
     const sizeArray = [];
     if (height) sizeArray.push(`Высота: ${height}`);
     if (width) sizeArray.push(`Ширина: ${width}`);
@@ -75,7 +97,8 @@ export default function CreateProductPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title,
-          price: Number(price),
+          description,
+          price: String(price),
           sku,
           images: mediaUrls, // Отправляем весь массив ссылок (картинки + видео)
           size: sizeArray,
@@ -83,15 +106,19 @@ export default function CreateProductPage() {
       });
 
       if (res.ok) {
-        alert('Товар успешно создан!');
+        alert('Product created successfully! / Товар успішно створено!');
         router.push('/admin/products'); // Возвращаемся к списку товаров
       } else {
         const errData = await res.json();
-        alert(`Ошибка сохранения: ${errData.error}`);
+        alert(`
+Saving error: / Помилка збереження ${errData.error}`);
       }
     } catch (error) {
-      console.error('Ошибка при создании товара:', error);
-      alert('Не удалось сохранить товар');
+      console.error(
+        'Error creating product / Помилка створення товару:',
+        error,
+      );
+      alert('Failed to save item / Не вдалося зберегти товар');
     } finally {
       setSaving(false);
     }
@@ -99,31 +126,83 @@ export default function CreateProductPage() {
 
   return (
     <div className="container mx-auto p-6 max-w-2xl">
-      <h1 className="text-2xl font-bold mb-6 text-gray-950 dark:text-white">
-        Добавление нового товара
+      <h1 className="text-2xl font-bold mb-6 text-gray-950 dark:text-white ">
+        Adding a new product / Додавання нового товару
       </h1>
+      <Link
+        href={`/${lang}/admin/products`}
+        className="text-sm text-gray-900 hover:underline  hover:text-gray-700 dark:text-gray-200 dark:hover:text-white  whitespace-nowrap text-left"
+      >
+        ← Back / Назад
+      </Link>
 
       <form
         onSubmit={handleSubmit}
-        className="space-y-6 bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-800"
+        className="space-y-6 bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-800 mb-20"
       >
-        <div>
-          <label className="block text-sm font-medium mb-1 text-gray-950 dark:text-white">
-            Название товара *
-          </label>
-          <input
-            type="text"
-            required
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full p-2 border rounded-lg bg-gray-50 dark:bg-gray-800 dark:text-white"
-          />
+        {/* Переключатель языковых вкладок */}
+        <div className="flex gap-2 mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
+          {(['ua', 'pl', 'en', 'lt'] as const).map((lang) => (
+            <button
+              key={lang}
+              type="button"
+              onClick={() => setActiveLang(lang)}
+              className={`px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 transition-colors uppercase ${
+                activeLang === lang
+                  ? 'border-blue-600 text-blue-600 bg-blue-50/50 dark:bg-blue-950/20'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+              }`}
+            >
+              {lang}
+            </button>
+          ))}
+        </div>
+
+        {/* Поля ввода для выбранного языка */}
+        <div className="space-y-4 mb-6 p-4 bg-gray-50 dark:bg-gray-800/40 rounded-xl border border-gray-200 dark:border-gray-700">
+          <div>
+            <label className="block text-sm font-medium text-gray-900 dark:text-gray-200 mb-1">
+              Product name / Назва товару (
+              <span className="uppercase text-blue-500 font-bold">
+                {activeLang}
+              </span>
+              )
+            </label>
+            <input
+              type="text"
+              required={activeLang === 'ua'} // Обязательно например только для основного языка
+              value={title[activeLang]}
+              onChange={(e) => handleTitleChange(activeLang, e.target.value)}
+              className="w-full p-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl text-sm text-gray-900 dark:text-white"
+              placeholder={`Product name / Назва мовою ${activeLang.toUpperCase()}`}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-900 dark:text-gray-300 mb-1">
+              Product description / Опис товару (
+              <span className="uppercase text-blue-500 font-bold">
+                {activeLang}
+              </span>
+              )
+            </label>
+            <textarea
+              rows={5}
+              required={activeLang === 'ua'}
+              value={description[activeLang]}
+              onChange={(e) =>
+                handleDescriptionChange(activeLang, e.target.value)
+              }
+              className="w-full p-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl text-sm text-gray-900 dark:text-white"
+              placeholder={`Product description / Опис мовою ${activeLang.toUpperCase()}`}
+            />
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1 text-gray-950 dark:text-white">
-              Цена (грн) *
+              Price / Ціна
             </label>
             <input
               type="number"
@@ -131,84 +210,98 @@ export default function CreateProductPage() {
               value={price}
               onChange={(e) => setPrice(e.target.value)}
               className="w-full p-2 border rounded-lg bg-gray-50 dark:bg-gray-800 dark:text-white "
+              placeholder="100"
             />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-gray-950 dark:text-white">
-              Артикул (SKU)
+              Article (SKU) / Артикул
             </label>
             <input
               type="text"
               value={sku}
               onChange={(e) => setSku(e.target.value)}
               className="w-full p-2 border rounded-lg bg-gray-50 dark:bg-gray-800 dark:text-white"
+              placeholder="00000000"
             />
           </div>
-        </div>
-
-        {/* Загрузчик галереи */}
-        <div>
-          <label className="block text-sm font-medium mb-2 text-gray-950 dark:text-white ">
-            Галерея товара (Фото и Видео)
-          </label>
-          <input
-            type="file"
-            multiple // Позволяет выбирать много файлов за раз
-            accept="image/*,video/mp4"
-            onChange={handleFileChange}
-            disabled={uploading}
-            className="block w-full text-sm text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-950 file:text-white hover:file:bg-blue-700 cursor-pointer disabled:opacity-50"
-          />
-          {uploading && (
-            <p className="text-xs text-blue-500 mt-1">
-              Загрузка файлов в облако...
-            </p>
-          )}
         </div>
 
         {/* Габаритные размеры */}
         <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-200 dark:border-gray-700 mb-6">
           <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-3">
-            Габаритные размеры (например: 50 см)
+            Dimensions (mm) / Габаритні розміри (мм)
           </h3>
           <div className="grid grid-cols-3 gap-4">
             <div>
               <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-                Высота
+                Height (mm)
+                <br />
+                Висота (мм)
               </label>
               <input
                 type="text"
                 value={height}
                 onChange={(e) => setHeight(e.target.value)}
-                placeholder="50 см"
+                placeholder="500"
                 className="w-full p-2.5 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white"
               />
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-                Ширина
+                Width (mm)
+                <br />
+                Ширина (мм)
               </label>
               <input
                 type="text"
                 value={width}
                 onChange={(e) => setWidth(e.target.value)}
-                placeholder="100 см"
+                placeholder="1000"
                 className="w-full p-2.5 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white"
               />
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-                Глубина
+                Depth (mm)
+                <br />
+                Глибина (мм)
               </label>
               <input
                 type="text"
                 value={depth}
                 onChange={(e) => setDepth(e.target.value)}
-                placeholder="30 см"
+                placeholder="300 "
                 className="w-full p-2.5 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white"
               />
             </div>
           </div>
+        </div>
+
+        {/* Загрузчик галереи */}
+        <div>
+          <label className="block text-sm font-medium mb-2 text-gray-950 dark:text-white">
+            Product Gallery (Photos and Videos) / Галерея товару (Фото та Відео)
+          </label>
+
+          <div className="flex items-center gap-2">
+            <label className="inline-block py-2 px-4 rounded-full text-sm font-semibold bg-blue-900 text-white hover:bg-blue-700 cursor-pointer transition-colors">
+              Add files / Додати файли
+              <input
+                type="file"
+                multiple
+                accept="image/*,video/mp4"
+                onChange={handleFileChange}
+                disabled={uploading}
+                className="hidden"
+              />
+            </label>
+          </div>
+          {uploading && (
+            <p className="text-xs text-blue-500 mt-1">
+              Uploading files to the cloud... / Завантаження файлів у хмару...
+            </p>
+          )}
         </div>
 
         {/* Блок предпросмотра загруженных файлов */}
@@ -241,7 +334,7 @@ export default function CreateProductPage() {
                     type="button"
                     onClick={() => handleRemoveMedia(index)}
                     className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 text-xs opacity-90 hover:opacity-100 transition-opacity"
-                    title="Удалить"
+                    title="Delete / Видалити"
                   >
                     ✕
                   </button>
@@ -257,9 +350,11 @@ export default function CreateProductPage() {
         <button
           type="submit"
           disabled={saving || uploading}
-          className="w-full py-3 bg-green-900 hover:bg-green-700 disabled:bg-gray-400 text-white font-medium rounded-lg transition-colors shadow-sm"
+          className="w-full py-2 bg-green-800 rounded-md hover:bg-green-700 disabled:bg-gray-800 transition-colors mt-2 font-medium text-white"
         >
-          {saving ? 'Сохранение товара...' : 'Создать товар'}
+          {saving
+            ? 'Saving product... / Збереження товару...'
+            : 'Create product / Створити товар'}
         </button>
       </form>
     </div>

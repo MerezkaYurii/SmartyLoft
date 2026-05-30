@@ -12,8 +12,15 @@ interface PageProps {
 export default function EditProductPage({ params }: PageProps) {
   const { lang, id } = use(params);
   const router = useRouter();
-
-  const [title, setTitle] = useState('');
+  // Стейт для активной языковой вкладки
+  const [activeLang, setActiveLang] = useState<'ua' | 'pl' | 'en' | 'lt'>('ua');
+  const [title, setTitle] = useState({ ua: '', pl: '', en: '', lt: '' });
+  const [description, setDescription] = useState({
+    ua: '',
+    pl: '',
+    en: '',
+    lt: '',
+  });
   const [price, setPrice] = useState('');
   const [sku, setSku] = useState('');
   const [loading, setLoading] = useState(false);
@@ -23,6 +30,14 @@ export default function EditProductPage({ params }: PageProps) {
   const [height, setHeight] = useState('');
   const [width, setWidth] = useState('');
   const [depth, setDepth] = useState('');
+  // Функции обновления текста для конкретного языка
+  const handleTitleChange = (lang: string, value: string) => {
+    setTitle((prev) => ({ ...prev, [lang]: value }));
+  };
+
+  const handleDescriptionChange = (lang: string, value: string) => {
+    setDescription((prev) => ({ ...prev, [lang]: value }));
+  };
 
   // Загружаем данные товара
   useEffect(() => {
@@ -34,7 +49,23 @@ export default function EditProductPage({ params }: PageProps) {
         const res = await fetch(`/api/products/${id}`);
         if (res.ok) {
           const product = await res.json();
-          setTitle(product.title);
+          if (product.title) {
+            setTitle({
+              ua: product.title.ua || '',
+              pl: product.title.pl || '',
+              en: product.title.en || '',
+              lt: product.title.lt || '',
+            });
+          }
+
+          if (product.description) {
+            setDescription({
+              ua: product.description.ua || '',
+              pl: product.description.pl || '',
+              en: product.description.en || '',
+              lt: product.description.lt || '',
+            });
+          }
           setPrice(String(product.price));
           setSku(product.sku || '');
           setImages(product.images || []);
@@ -51,11 +82,13 @@ export default function EditProductPage({ params }: PageProps) {
             if (depthMatch) setDepth(depthMatch[1].trim());
           }
         } else {
-          alert('Товар не найден в базе данных');
+          alert(
+            'Product not found in the database / Товар не знайдено у базі даних',
+          );
           router.push(`/${lang}/admin/products`);
         }
       } catch (error) {
-        console.error('Ошибка загрузки:', error);
+        console.error('Loading error / Помилка завантаження:', error);
       } finally {
         setLoading(false);
       }
@@ -89,7 +122,10 @@ export default function EditProductPage({ params }: PageProps) {
 
       if (res.ok) {
         const data = await res.json();
-        console.log('Ответ от сервера загрузки:', data);
+        console.log(
+          'Response from upload server / Відповідь від сервера завантаження:',
+          data,
+        );
 
         // 1. Если сервер возвращает массив напрямую в data.urls
         if (data.urls && Array.isArray(data.urls)) {
@@ -107,14 +143,21 @@ export default function EditProductPage({ params }: PageProps) {
         else if (data.images && Array.isArray(data.images)) {
           setImages((prev) => [...prev, ...data.images]);
         } else {
-          alert('Файлы загружены, но сервер вернул неизвестный формат данных');
+          alert(
+            'Files uploaded, but the server returned an unknown data format / Файли завантажені, але сервер повернув невідомий формат даних',
+          );
         }
       } else {
-        alert('Не удалось загрузить новые файлы');
+        alert('Failed to upload new files / Не вдалося завантажити нові файли');
       }
     } catch (error) {
-      console.error('Ошибка при загрузке файлов:', error);
-      alert('Ошибка при отправке файлов на сервер');
+      console.error(
+        'Error uploading fil`es / Помилка завантаження файлів:',
+        error,
+      );
+      alert(
+        'Error sending files to server / Помилка відправки файлів на сервер',
+      );
     } finally {
       setIsUploading(false);
     }
@@ -125,22 +168,29 @@ export default function EditProductPage({ params }: PageProps) {
     setIsSaving(true);
 
     const sizeArray = [];
-    if (height) sizeArray.push(`Высота: ${height}`);
+    if (height) sizeArray.push(`Висота: ${height}`);
     if (width) sizeArray.push(`Ширина: ${width}`);
-    if (depth) sizeArray.push(`Глубина: ${depth}`);
+    if (depth) sizeArray.push(`Глибина: ${depth}`);
 
     try {
       const res = await fetch(`/api/products/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, price: Number(price), sku, images }),
+        body: JSON.stringify({
+          title,
+          description,
+          price: String(price),
+          sku,
+          images,
+          size: sizeArray,
+        }),
       });
 
       if (res.ok) {
-        alert('Успешно обновлено!');
+        alert('Successfully updated / Успішно оновлено!');
         router.push(`/${lang}/admin/products`);
       } else {
-        alert('Ошибка при сохранении');
+        alert('Error saving / Помилка при збереженні');
       }
     } catch (error) {
       console.error(error);
@@ -150,17 +200,21 @@ export default function EditProductPage({ params }: PageProps) {
   };
 
   if (loading)
-    return <p className="text-center p-6 text-gray-500">Загрузка данных...</p>;
+    return (
+      <p className="text-center p-6 text-gray-500">
+        Loading data / Завантаження даних...
+      </p>
+    );
 
   return (
-    <div className="container mx-auto p-6 max-w-xl text-white">
+    <div className="container mx-auto p-6 max-w-xl text-white pb-24">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Редактирование ({id})</h1>
+        <h1 className="text-2xl font-medium"> Editing / Редагування ({id})</h1>
         <Link
           href={`/${lang}/admin/products`}
-          className="text-sm text-gray-400 hover:underline"
+          className="text-sm text-gray-300 hover:underline   hover:text-white   whitespace-nowrap  test-right"
         >
-          Назад
+          ← Back / Назад
         </Link>
       </div>
 
@@ -168,17 +222,65 @@ export default function EditProductPage({ params }: PageProps) {
         onSubmit={handleSubmit}
         className="space-y-4 bg-gray-900 p-6 rounded-xl border border-gray-800"
       >
-        <div>
-          <label className="block text-sm font-medium mb-1">Название</label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full p-2 bg-gray-800 border border-gray-700 rounded-md"
-          />
+        {/* Поля ввода для выбранного языка */}
+        {/* Переключатель языковых вкладок */}
+        <div className="flex gap-2 mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
+          {(['ua', 'pl', 'en', 'lt'] as const).map((lang) => (
+            <button
+              key={lang}
+              type="button"
+              onClick={() => setActiveLang(lang)}
+              className={`px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 transition-colors uppercase ${
+                activeLang === lang
+                  ? 'border-blue-600 text-blue-600 bg-blue-50/50 dark:bg-blue-950/20'
+                  : 'border-transparent text-gray-200 hover:text-gray-700 dark:hover:text-gray-300'
+              }`}
+            >
+              {lang}
+            </button>
+          ))}
+        </div>
+        <div className="space-y-4 mb-6 p-4 bg-gray-50 dark:bg-gray-800/40 rounded-xl border border-gray-200 dark:border-gray-700">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Product name / Назва товару (
+              <span className="uppercase text-blue-500 font-bold">
+                {activeLang}
+              </span>
+              )
+            </label>
+            <input
+              type="text"
+              required={activeLang === 'ua'}
+              value={title[activeLang]}
+              onChange={(e) => handleTitleChange(activeLang, e.target.value)}
+              className="w-full p-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl text-sm text-gray-900 dark:text-white"
+              placeholder={`Product name / Назва мовою ${activeLang.toUpperCase()}`}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Product description / Опис товару (
+              <span className="uppercase text-blue-500 font-bold">
+                {activeLang}
+              </span>
+              )
+            </label>
+            <textarea
+              rows={5}
+              required={activeLang === 'ua'}
+              value={description[activeLang]}
+              onChange={(e) =>
+                handleDescriptionChange(activeLang, e.target.value)
+              }
+              className="w-full p-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl text-sm text-gray-900 dark:text-white"
+              placeholder={`Product description / Опис мовою ${activeLang.toUpperCase()}`}
+            />
+          </div>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Цена</label>
+          <label className="block text-sm font-medium mb-1">Price / Ціна</label>
           <input
             type="number"
             value={price}
@@ -187,7 +289,9 @@ export default function EditProductPage({ params }: PageProps) {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Артикул</label>
+          <label className="block text-sm font-medium mb-1">
+            Article (SKU) / Артикул
+          </label>
           <input
             type="text"
             value={sku}
@@ -197,14 +301,16 @@ export default function EditProductPage({ params }: PageProps) {
         </div>
 
         {/* Габаритные размеры */}
-        <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-200 dark:border-gray-700 mb-6">
-          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-3">
-            Габаритные размеры (например: 50 см)
+        <div className="bg-gray-200 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-200 dark:border-gray-700 mb-4">
+          <h3 className="text-sm font-medium  text-gray-900 dark:text-gray-200  tracking-wider mb-3">
+            Dimensions (mm) / Габаритні розміри (мм)
           </h3>
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-                Высота
+              <label className="block text-xs font-medium text-gray-900 dark:text-gray-200 mb-1">
+                Height (mm)
+                <br />
+                Висота (мм)
               </label>
               <input
                 type="text"
@@ -215,8 +321,10 @@ export default function EditProductPage({ params }: PageProps) {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-                Ширина
+              <label className="block text-xs font-medium text-gray-900 dark:text-gray-200 mb-1">
+                Width (mm)
+                <br />
+                Ширина (мм)
               </label>
               <input
                 type="text"
@@ -227,8 +335,10 @@ export default function EditProductPage({ params }: PageProps) {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-                Глубина
+              <label className="block text-xs font-medium text-gray-900 dark:text-gray-200 mb-1">
+                Depth (mm)
+                <br />
+                Глибина (мм)
               </label>
               <input
                 type="text"
@@ -243,14 +353,16 @@ export default function EditProductPage({ params }: PageProps) {
 
         {/* Галерея товара */}
         <div>
-          <label className="block text-sm font-medium mb-2">
-            Галерея товара (Фото и Видео)
+          <label className="block text-sm font-medium mb-2text-gray-50 mb-4">
+            Product Gallery (Photos and Videos) / Галерея товару (Фото та Відео)
           </label>
 
           {/* Кнопка добавления новых файлов */}
           <div className="mb-4">
-            <label className="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-md cursor-pointer transition-colors text-sm font-medium">
-              {isUploading ? 'Загрузка...' : 'Добавить файлы'}
+            <label className="inline-block px-4 py-2 bg-blue-800 hover:bg-blue-700 rounded-md cursor-pointer transition-colors text-sm font-medium">
+              {isUploading
+                ? 'Loading / Завантаження...'
+                : 'Add files / Додати файли'}
               <input
                 type="file"
                 multiple
@@ -277,8 +389,8 @@ export default function EditProductPage({ params }: PageProps) {
                     <button
                       type="button"
                       onClick={() => handleDeleteImage(index)}
-                      className="absolute top-1 right-1 z-10 w-5 h-5 bg-red-600 rounded-full flex items-center justify-center text-xs font-bold hover:bg-red-500 transition-colors"
-                      title="Удалить"
+                      className="absolute top-1 right-1 z-10 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-xs font-bold hover:bg-red-500 transition-colors"
+                      title="Delete / Видалити"
                     >
                       ×
                     </button>
@@ -310,9 +422,11 @@ export default function EditProductPage({ params }: PageProps) {
         <button
           type="submit"
           disabled={isSaving || isUploading}
-          className="w-full py-2 bg-green-700 rounded-md hover:bg-green-600 disabled:bg-gray-800 transition-colors mt-6 font-medium"
+          className="w-full py-2 bg-green-800 rounded-md hover:bg-green-700 disabled:bg-gray-800 transition-colors mt-6 font-medium"
         >
-          {isSaving ? 'Сохранение...' : 'Сохранить изменения'}
+          {isSaving
+            ? 'Loading / Завантаження...'
+            : 'Save changes / Зберегти зміни'}
         </button>
       </form>
     </div>

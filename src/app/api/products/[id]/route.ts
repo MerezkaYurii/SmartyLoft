@@ -56,7 +56,7 @@ export async function PUT(request: Request, { params }: RouteParams) {
         price: Number(price),
         sku: sku || '',
         images: Array.isArray(images) ? images : [],
-        description: description || 'Временное описание',
+        description,
         size: Array.isArray(size) ? size : [],
       },
       { new: true, runValidators: true }, // new: true вернет уже обновленный документ

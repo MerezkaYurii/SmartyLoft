@@ -21,7 +21,8 @@ export async function POST(request: Request) {
   try {
     await initMongoConnection();
 
-    const { title, price, sku, images, size } = await request.json();
+    const { title, description, price, sku, images, size } =
+      await request.json();
 
     if (!title || !price) {
       return NextResponse.json(
@@ -36,8 +37,7 @@ export async function POST(request: Request) {
       price: String(price),
       sku: sku || '',
       images: images || [],
-      description: 'Временное описание',
-      id: sku || String(Date.now()),
+      description,
       size: size || [],
     });
 

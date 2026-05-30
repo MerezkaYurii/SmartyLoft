@@ -44,12 +44,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
           {/* Двухколоночный лейаут в стиле лофт */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start pl-5 pr-5 ">
             {/* Левая колонка: Большое фото товара */}
-            <ProductGallery images={product.images} alt={product.title} />
+            <ProductGallery
+              images={product.images}
+              alt={product.title[lang] || product.title['ua'] || ''}
+            />
 
             {/* Правая колонка: Информация */}
             <div className="flex flex-col h-full">
               <h1 className="text-3xl md:text-4xl font-bold uppercase tracking-wider mb-4 text-gray-900 dark:text-gray-100 ">
-                {product.title}
+                {product.title[lang] || product.title['ua'] || ''}
               </h1>
 
               <span className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100 ">
@@ -61,7 +64,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   {dict.ProductPage.description}
                 </h2>
                 <p className="text-gray-900 dark:text-gray-100 leading-relaxed">
-                  {product.description}
+                  {product.description[lang] || product.description['ua'] || ''}
                 </p>
               </div>
 
