@@ -14,7 +14,7 @@ export default async function ProductGrid({ currentLocale }: ProductGridProps) {
   const dict = await getDictionary(currentLocale);
   await initMongoConnection();
 
-  const mongoProducts = await Product.find({}).lean();
+  const mongoProducts = await Product.find({ isNewProduct: true }).lean();
 
   const products = mongoProducts.map((doc) => ({
     id: doc._id.toString(),
@@ -29,10 +29,12 @@ export default async function ProductGrid({ currentLocale }: ProductGridProps) {
     <section className="px-2 py-0.5 sm:px-4 sm:py-1 lg:px-6 lg:py-2 ">
       <div className="container mx-auto  py-2 text-center  bg-[#EAE6DF] dark:bg-[#2A2B2B] rounded-2xl ">
         {/* Заголовок секции */}
-        <h2 className="text-xl sm:text-2xl lg:text-3xl  italic font-bold text-left pl-10 text-gray-900 dark:text-white  ">
-          {dict.ProductGrid.title}
-        </h2>
-
+        <div>
+          <h2 className="text-xl sm:text-2xl lg:text-3xl  italic font-bold text-left pl-10 text-gray-900 dark:text-white  ">
+            {dict.ProductGrid.title}
+          </h2>
+          <div className="mt-2 ml-10 h-1 w-16 bg-[#0f3995] rounded" />
+        </div>
         {/* Сетка Grid: 1 колонка на мобилках, 2 на планшетах, 3 на ПК */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 p-5">
           {products.map((product) => (

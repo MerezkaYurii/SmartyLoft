@@ -36,7 +36,6 @@ export default async function RootLayout({
           <div className="fixed inset-0 z-0 pointer-events-none">
             {/* Светлая тема */}
             <div className="absolute inset-0 dark:hidden">
-              Ч
               <Image
                 src="/bgWiteThema.jpg"
                 alt="Light theme background"

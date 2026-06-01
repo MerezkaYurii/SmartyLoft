@@ -1,3 +1,4 @@
+import CatalogSections from '@/src/components/CatalogSections';
 import HomePageSlider from '@/src/components/HomePageSlider';
 import ProductGrid from '@/src/components/ProductGrid';
 import TestComponent from '@/src/components/TestComponent';
@@ -10,10 +11,10 @@ export default async function Home({
   const { lang } = await params;
   return (
     <main className="flex flex-col items-center ">
-      <div className="container w-full max-w-7x bg-[#EAE6DF]/60  dark:bg-[#1F2020]/60">
+      <div className="container w-full max-w-7x bg-[#EAE6DF]/60  dark:bg-[#1F2020]/60 mb-20 ">
         <HomePageSlider />
         <ProductGrid currentLocale={lang} />
-        <TestComponent />
+        <CatalogSections />
         <TestComponent />
       </div>
     </main>

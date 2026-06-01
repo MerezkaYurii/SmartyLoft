@@ -2,10 +2,19 @@ import Product from '@/src/DataBase/models/Product';
 import { initMongoConnection } from '@/src/lib/mongoose';
 import { NextResponse } from 'next/server';
 
-export async function GET() {
+// 1. Получение товаров (с поддержкой фильтрации по категории)
+export async function GET(request: Request) {
   try {
     await initMongoConnection();
-    const products = await Product.find({}).sort({ createdAt: -1 });
+
+    // Извлекаем id категории из параметров запроса (если он передан)
+    const { searchParams } = new URL(request.url);
+    const categoryId = searchParams.get('category');
+
+    // Если передан categoryId, фильтруем по нему, иначе отдаем все товары
+    const filter = categoryId ? { category: categoryId } : {};
+
+    const products = await Product.find(filter).sort({ createdAt: -1 });
     return NextResponse.json(products);
   } catch (error) {
     console.error('Ошибка при получении товаров:', error);
@@ -21,8 +30,16 @@ export async function POST(request: Request) {
   try {
     await initMongoConnection();
 
-    const { title, description, price, sku, images, size } =
-      await request.json();
+    const {
+      title,
+      description,
+      price,
+      sku,
+      images,
+      size,
+      category,
+      isNewProduct,
+    } = await request.json();
 
     if (!title || !price) {
       return NextResponse.json(
@@ -31,7 +48,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Создаем запись в MongoDB
+    // Создаем запись в MongoDB со всеми полями
     const newProduct = await Product.create({
       title,
       price: String(price),
@@ -39,19 +56,23 @@ export async function POST(request: Request) {
       images: images || [],
       description,
       size: size || [],
+      category: category || '',
+      isNewProduct: Boolean(isNewProduct),
     });
 
     return NextResponse.json(newProduct, { status: 201 });
   } catch (error) {
     console.error('Ошибка при создании товара:', error);
+    const errorMessage =
+      error instanceof Error ? error.message : 'Неизвестная ошибка';
     return NextResponse.json(
-      { error: 'Ошибка сервера при сохранении' },
+      { error: `Ошибка сервера при сохранении: ${errorMessage}` },
       { status: 500 },
     );
   }
 }
 
-// 3. Удаление товара по его ID без использования any
+// 3. Удаление товара по его ID
 export async function DELETE(request: Request) {
   try {
     await initMongoConnection();
@@ -81,11 +102,8 @@ export async function DELETE(request: Request) {
     );
   } catch (error) {
     console.error('Ошибка при удалении товара:', error);
-
-    // Безопасно достаем сообщение об ошибке без any
     const errorMessage =
       error instanceof Error ? error.message : 'Неизвестная ошибка сервера';
-
     return NextResponse.json(
       { error: `Ошибка сервера при удалении: ${errorMessage}` },
       { status: 500 },

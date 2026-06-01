@@ -36,10 +36,22 @@ export async function GET(request: Request, { params }: RouteParams) {
 export async function PUT(request: Request, { params }: RouteParams) {
   try {
     await initMongoConnection();
+    await Product.collection.dropIndex('id_1').catch(() => {});
     const { id } = await params;
 
     const body = await request.json();
-    const { title, price, sku, images, description, size } = body;
+
+    // Достаем из тела запроса новые поля: category и isNewProduct
+    const {
+      title,
+      price,
+      sku,
+      images,
+      description,
+      size,
+      category,
+      isNewProduct,
+    } = body;
 
     if (!title || !price) {
       return NextResponse.json(
@@ -48,16 +60,18 @@ export async function PUT(request: Request, { params }: RouteParams) {
       );
     }
 
-    // Обновляем документ в MongoDB
+    // Обновляем документ в MongoDB со всеми новыми полями
     const updatedProduct = await Product.findByIdAndUpdate(
       id,
       {
         title,
-        price: Number(price),
+        price: String(price), // Приводим к строке, как и при создании товара
         sku: sku || '',
         images: Array.isArray(images) ? images : [],
         description,
         size: Array.isArray(size) ? size : [],
+        category: category || '', // Обновляем ID категории
+        isNewProduct: Boolean(isNewProduct), // Обновляем статус новинки
       },
       { new: true, runValidators: true }, // new: true вернет уже обновленный документ
     );
@@ -71,7 +85,7 @@ export async function PUT(request: Request, { params }: RouteParams) {
 
     return NextResponse.json(updatedProduct, { status: 200 });
   } catch (error) {
-    console.error('Ошибка при обновлении товара:', error);
+    console.error('Ошибка при更新лении товара:', error);
     const msg = error instanceof Error ? error.message : 'Ошибка сервера';
     return NextResponse.json(
       { error: `Не удалось сохранить изменения: ${msg}` },

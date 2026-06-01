@@ -3,13 +3,31 @@
 import { usePathname } from 'next/navigation';
 import { useDictionary } from '../hooks/useDictionary';
 import LanguageSwitcher from './LanguageSwitcher';
-import ThemeToggle from './ThemeToggle';
+
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
+import HeaderCategoriesDropdown from './HeaderCategoriesDropdown';
+
+// Загружаем компонент динамически только на клиенте
+const ThemeToggle = dynamic(() => import('./ThemeToggle'), {
+  ssr: false,
+  loading: () => (
+    // Заглушка, пока компонент грузится на клиенте
+    <button
+      style={{ width: '110px', height: '32px' }}
+      className="bg-[#0f3995] rounded-full opacity-50 cursor-not-allowed"
+      disabled
+    >
+      Loading...
+    </button>
+  ),
+});
 
 export default function Header() {
   const pathname = usePathname();
   const currentLocale = pathname?.split('/')[1] || 'en';
   const dict = useDictionary();
+
   if (!dict) return null;
 
   return (
@@ -23,6 +41,11 @@ export default function Header() {
             <use href="/spriteSL.svg#icon-Logo-smartyloft-white" />
           </svg>
         </Link>
+
+        <HeaderCategoriesDropdown
+          currentLocale={currentLocale}
+          buttonText={dict.header.categories}
+        />
 
         <Link
           href={`/${currentLocale}/contacts`}

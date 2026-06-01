@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import { initialCategories } from '@/src/data/categories-data';
 
 export default function CreateProductPage() {
   const router = useRouter();
@@ -24,6 +25,10 @@ export default function CreateProductPage() {
   const [height, setHeight] = useState('');
   const [width, setWidth] = useState('');
   const [depth, setDepth] = useState('');
+
+  // 1. НОВЫЕ СТЕЙТЫ: Для категории (по умолчанию берем ID первой) и галочки новинки
+  const [category, setCategory] = useState(initialCategories[0]?.id || '');
+  const [isNewProduct, setIsNewProduct] = useState(false);
 
   // Массив ссылок на загруженные медиафайлы (картинки и видео)
   const [mediaUrls, setMediaUrls] = useState<string[]>([]);
@@ -102,6 +107,8 @@ export default function CreateProductPage() {
           sku,
           images: mediaUrls, // Отправляем весь массив ссылок (картинки + видео)
           size: sizeArray,
+          category, // 2. ОТПРАВЛЯЕМ ID КАТЕГОРИИ
+          isNewProduct,
         }),
       });
 
@@ -224,6 +231,38 @@ Saving error: / Помилка збереження ${errData.error}`);
               className="w-full p-2 border rounded-lg bg-gray-50 dark:bg-gray-800 dark:text-white"
               placeholder="00000000"
             />
+          </div>
+        </div>
+
+        {/* 3. БЛОК: Выбор категории и Галочка новинки */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+          <div>
+            <label className="block text-sm font-medium mb-1 text-gray-950 dark:text-white">
+              Category / Категорія
+            </label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full p-2.5 border rounded-lg bg-white dark:bg-gray-900 text-sm text-gray-900 dark:text-white border-gray-300 dark:border-gray-700"
+            >
+              {initialCategories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.title}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex items-center pt-6 pl-2">
+            <label className="relative flex items-center cursor-pointer select-none text-sm font-medium text-gray-950 dark:text-white gap-3">
+              <input
+                type="checkbox"
+                checked={isNewProduct}
+                onChange={(e) => setIsNewProduct(e.target.checked)}
+                className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 bg-white dark:bg-gray-900"
+              />
+              <span>Our new product / Новинка на головній</span>
+            </label>
           </div>
         </div>
 

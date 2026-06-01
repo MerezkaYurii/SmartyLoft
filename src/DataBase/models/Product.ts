@@ -16,7 +16,8 @@ export interface IProduct extends Document {
   price: string;
   images: string[];
   sku?: string;
-  category?: string;
+  category: string;
+  isNewProduct: boolean;
   size?: string[];
   createdAt: Date;
 }
@@ -39,7 +40,8 @@ const ProductSchema: Schema = new Schema(
     price: { type: String, required: true },
     sku: { type: String, default: '' },
     images: { type: [String], default: [] },
-    category: { type: String, default: '' },
+    category: { type: String, default: '', index: true },
+    isNewProduct: { type: Boolean, default: false },
     size: { type: [String], default: [] },
   },
   {

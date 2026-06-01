@@ -82,12 +82,20 @@ export default function AdminProductsPage() {
         <h1 className="text-2xl font-medium text-gray-950 dark:text-white">
           Product management / Управління товарами
         </h1>
-        <Link
-          href="/admin/products/create"
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-lg text-sm transition-colors"
-        >
-          + Add product / Додати товар
-        </Link>
+        <div className="flex flex-col gap-3">
+          <Link
+            href="/admin/categories"
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-lg text-sm  text-center transition-colors "
+          >
+            Categories / Категорії
+          </Link>
+          <Link
+            href="/admin/products/create"
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-lg text-sm transition-colors"
+          >
+            + Add product / Додати товар
+          </Link>
+        </div>
       </div>
 
       {products.length === 0 ? (

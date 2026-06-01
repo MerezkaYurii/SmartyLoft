@@ -4,7 +4,8 @@
     "language": "English",
     "darkMode": "Dark Mode",
     "lightMode": "Light Mode",
-    "contacts": "Contacts"
+    "contacts": "Contacts",
+    "categories": "Our products"
   },
   "contacts": {
     "title": "Contact Us",
