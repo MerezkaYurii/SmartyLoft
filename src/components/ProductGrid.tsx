@@ -5,25 +5,42 @@ import { initMongoConnection } from '../lib/mongoose';
 import Product from '../DataBase/models/Product';
 
 import { getDictionary } from '../lib/get-dictionary';
+import { formatPrice } from '../lib/currency';
 
 // 1. Описываем типы для пропсов, чтобы принимать язык от родительской страницы
 interface ProductGridProps {
   currentLocale: 'en' | 'ua' | 'pl' | 'lt';
 }
+
+interface IMongoProduct {
+  _id: { toString: () => string };
+  title: Record<string, string | undefined>;
+  description: Record<string, string | undefined>;
+  price: string;
+  sku?: string;
+  images: string[];
+}
+
 export default async function ProductGrid({ currentLocale }: ProductGridProps) {
   const dict = await getDictionary(currentLocale);
   await initMongoConnection();
 
   const mongoProducts = await Product.find({ isNewProduct: true }).lean();
 
-  const products = mongoProducts.map((doc) => ({
-    id: doc._id.toString(),
-    title: doc.title,
-    description: doc.description,
-    price: doc.price,
-    sku: doc.sku,
-    images: doc.images,
-  }));
+  const products = await Promise.all(
+    mongoProducts.map(async (doc) => {
+      const displayPrice = await formatPrice(doc.price, currentLocale); // Форматируем цену на лету
+
+      return {
+        id: doc._id.toString(),
+        title: doc.title,
+        description: doc.description,
+        price: displayPrice, // Теперь тут готовая строка с валютой
+        sku: doc.sku,
+        images: doc.images,
+      };
+    }),
+  );
 
   return (
     <section className="px-2 py-0.5 sm:px-4 sm:py-1 lg:px-6 lg:py-2 ">

@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState, use } from 'react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 interface ILocalizedText {
   ua: string;
@@ -17,7 +18,8 @@ interface EditCategoryPageProps {
 export default function EditCategoryPage({ params }: EditCategoryPageProps) {
   const router = useRouter();
   const { id } = use(params);
-
+  const par = useParams();
+  const lang = (par?.lang as string) || 'ua';
   const [loading, setLoading] = useState<boolean>(true);
   const [saving, setSaving] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -116,9 +118,15 @@ export default function EditCategoryPage({ params }: EditCategoryPageProps) {
   return (
     <div className="p-6 max-w-2xl mx-auto dark:text-white">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">
-          Редагування категорії / Редактирование категории
+        <h1 className="text-2xl font-normal">
+          Editing a category / Редагування категорії
         </h1>
+        <Link
+          href={`/${lang}/admin/categories`}
+          className="text-sm text-gray-900 hover:underline  hover:text-gray-700 dark:text-gray-200 dark:hover:text-white  whitespace-nowrap text-left"
+        >
+          ← Back / Назад
+        </Link>
       </div>
 
       {error && (
@@ -177,7 +185,7 @@ export default function EditCategoryPage({ params }: EditCategoryPageProps) {
 
         <div>
           <label className="block text-sm font-medium mb-1">
-            Посилання на картинку / Ссылка на картинку
+            Link to the picture / Посилання на картинку
           </label>
           <input
             type="text"
@@ -194,14 +202,14 @@ export default function EditCategoryPage({ params }: EditCategoryPageProps) {
             className="px-4 py-2 bg-gray-300 hover:bg-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 rounded transition-colors"
             disabled={saving}
           >
-            Скасувати / Отмена
+            Cancel / Скасувати
           </button>
           <button
             type="submit"
             className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors"
             disabled={saving}
           >
-            {saving ? 'Збереження...' : 'Зберегти / Сохранить'}
+            {saving ? 'Saving / Збереження...' : 'Save / Зберегти'}
           </button>
         </div>
       </form>

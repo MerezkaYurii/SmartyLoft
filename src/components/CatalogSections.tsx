@@ -17,10 +17,18 @@ interface ICategory {
 }
 
 interface CatalogSectionsProps {
-  lang?: string; // Пропс для определения текущего языка (дефолт 'ua')
+  lang?: string;
+  name: string; // Переданный заголовок секции, например: "Каталог" или "Categories"
+  loadingText: string; // Перевод для текста загрузки
+  errorText: string;
 }
 
-export default function CatalogSections({ lang = 'ua' }: CatalogSectionsProps) {
+export default function CatalogSections({
+  lang = 'ua',
+  name,
+  loadingText,
+  errorText,
+}: CatalogSectionsProps) {
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -48,15 +56,15 @@ export default function CatalogSections({ lang = 'ua' }: CatalogSectionsProps) {
 
   if (loading) {
     return (
-      <div className="text-center py-10 dark:text-white">
-        Загрузка категорий...
-      </div>
+      <div className="text-center py-10 dark:text-white">{loadingText}</div>
     );
   }
 
   if (error) {
     return (
-      <div className="text-center py-10 text-red-500">Ошибка: {error}</div>
+      <div className="text-center py-10 text-red-500">
+        {errorText}: {error}
+      </div>
     );
   }
 
@@ -66,7 +74,7 @@ export default function CatalogSections({ lang = 'ua' }: CatalogSectionsProps) {
         {/* Заголовок секции */}
         <div>
           <h2 className="text-xl sm:text-2xl lg:text-3xl italic font-bold text-left pl-10 text-gray-900 dark:text-white ">
-            Наши товары:
+            {name}
           </h2>
           <div className="mt-2 ml-10 h-1 w-16 bg-[#0f3995] rounded" />
         </div>

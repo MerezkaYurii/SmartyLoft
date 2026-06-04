@@ -38,6 +38,11 @@
     "description": "Aprašymas",
     "buy": "Pirkti 1 paspaudimu"
   },
+  "CatalogSections": {
+  "name": "Mūsų produktai:",
+  "loading": "Užkraunama...",
+  "error": "Klaida"
+},
     "footer": {
         "text": "pagaminta su"
     }

@@ -38,6 +38,11 @@
   "description": "Опис",
   "buy": "Купити в 1 клік"
 },
+"CatalogSections": {
+  "name": "Наші продукти:",
+  "loading": "Завантаження...",
+  "error": "Помилка"
+},
     "footer": {
         "text": "Зроблено з"
     }

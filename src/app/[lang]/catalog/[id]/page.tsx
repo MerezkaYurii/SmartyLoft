@@ -7,6 +7,7 @@ import Product from '@/src/DataBase/models/Product';
 
 import { getDictionary } from '@/src/lib/get-dictionary';
 import Category from '@/src/DataBase/models/Category';
+import { formatPrice } from '@/src/lib/currency';
 
 interface Props {
   params: Promise<{
@@ -47,20 +48,27 @@ export default async function CategoryPage({ params }: Props) {
   const categoryTitle =
     mongoCategory.title[lang] || mongoCategory.title['ua'] || '';
 
-  // 3. Фильтруем товары в базе по совпадению поля category с ID страницы
+  // 3. Фильтруем товары в базе. Next.js/Mongoose стабильнее ищет, если передавать id напрямую
   const mongoProducts = (await Product.find({
     category: id,
-  }).lean()) as IMongoProduct[];
+  }).lean()) as unknown as IMongoProduct[];
 
-  const products = mongoProducts.map((doc) => ({
-    id: doc._id.toString(),
-    title: doc.title,
-    description: doc.description,
-    price: doc.price,
-    sku: doc.sku,
-    images: doc.images,
-    category: doc.category,
-  }));
+  // 4. Пересчитываем цены для каждого товара под текущий язык
+  const products = await Promise.all(
+    mongoProducts.map(async (doc) => {
+      const displayPrice = await formatPrice(doc.price, lang); // Форматируем цену на лету
+
+      return {
+        id: doc._id.toString(),
+        title: doc.title,
+        description: doc.description,
+        price: displayPrice, // Тут уже лежит готовая строка: "4500 грн" или "108 $"
+        sku: doc.sku,
+        images: doc.images,
+        category: doc.category,
+      };
+    }),
+  );
 
   return (
     <section className="px-2 py-0.5 sm:px-4 sm:py-1 lg:px-6 lg:py-2 max-w-7xl mx-auto min-h-screen pt-[90px]">
@@ -78,8 +86,12 @@ export default async function CategoryPage({ params }: Props) {
 
         {/* Проверка на наличие товаров */}
         {products.length === 0 ? (
-          <div className="p-10 text-center text-gray-500 dark:text-gray-400">
-            В этой категории пока нет товаров.
+          <div className="p-10 text-center text-gray-900 dark:text-gray-200 text-xl font-normal italic">
+            There are no products in this category yet.
+            <br /> У цій категорії поки що немає товарів.
+            <br />
+            Šioje kategorijoje dar nėra produktų.
+            <br />W tej kategorii nie ma jeszcze produktów.
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 p-5">
@@ -141,7 +153,8 @@ export default async function CategoryPage({ params }: Props) {
                   {/* Цена + Кнопка */}
                   <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-100 dark:border-gray-800">
                     <span className="text-xl font-bold text-gray-900 dark:text-white">
-                      {product.price} грн
+                      {product.price}{' '}
+                      {/* Убрали жесткое "грн", теперь валюта полностью берется из функции */}
                     </span>
 
                     <Link

@@ -1,5 +1,6 @@
 import ProductGallery from '@/src/components/ProductGallery';
 import Product from '@/src/DataBase/models/Product';
+import { formatPrice } from '@/src/lib/currency';
 import { getDictionary } from '@/src/lib/get-dictionary';
 import { initMongoConnection } from '@/src/lib/mongoose';
 
@@ -22,11 +23,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
   if (!mongoProduct) {
     notFound();
   }
+
+  const displayPrice = await formatPrice(mongoProduct.price, lang);
+
   const product = {
     id: mongoProduct._id.toString(),
     title: mongoProduct.title,
     description: mongoProduct.description,
-    price: mongoProduct.price,
+    price: displayPrice,
     images: mongoProduct.images,
   };
   return (
@@ -35,7 +39,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <div className="container mx-auto  py-10 text-center  bg-[#EAE6DF] dark:bg-[#2A2B2B] rounded-2xl ">
           {/* Кнопка назад */}
           <Link
-            href={`/${lang}`}
+            href={`/${lang}/catalog/${mongoProduct.category}`}
             className="inline-flex items-center text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-gray-900 dark:hover:text-white mb-8 transition-colors"
           >
             ← {dict.ProductPage.back}

@@ -2,6 +2,7 @@ import CatalogSections from '@/src/components/CatalogSections';
 import HomePageSlider from '@/src/components/HomePageSlider';
 import ProductGrid from '@/src/components/ProductGrid';
 import TestComponent from '@/src/components/TestComponent';
+import { getDictionary } from '@/src/lib/get-dictionary';
 
 export default async function Home({
   params,
@@ -9,12 +10,18 @@ export default async function Home({
   params: Promise<{ lang: 'en' | 'ua' | 'pl' | 'lt' }>;
 }) {
   const { lang } = await params;
+  const dict = await getDictionary(lang);
   return (
     <main className="flex flex-col items-center ">
       <div className="container w-full max-w-7x bg-[#EAE6DF]/60  dark:bg-[#1F2020]/60 mb-20 ">
         <HomePageSlider />
         <ProductGrid currentLocale={lang} />
-        <CatalogSections />
+        <CatalogSections
+          lang={lang}
+          name={dict.CatalogSections.name}
+          loadingText={dict.CatalogSections.loading || 'Завантаження...'}
+          errorText={dict.CatalogSections.error || 'Помилка'}
+        />
         <TestComponent />
       </div>
     </main>

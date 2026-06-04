@@ -70,12 +70,20 @@ export default function AdminCategoriesPage() {
   return (
     <div className="p-6 max-w-6xl mx-auto dark:text-white">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Управление категориями</h1>
+        <h1 className=" pl-4  text-2xl font-light ">
+          Manage categories / Управління категоріями
+        </h1>
+        <Link
+          href={`/${lang}/admin/products`}
+          className="text-sm text-gray-900 hover:underline  hover:text-gray-700 dark:text-gray-200 dark:hover:text-white  whitespace-nowrap text-left"
+        >
+          ← Back / Назад
+        </Link>
         <Link
           href={`/${lang}/admin/categories/create`}
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition-colors"
         >
-          + Добавить категорию
+          + Add a category / Додатити категорію
         </Link>
       </div>
 
@@ -83,9 +91,18 @@ export default function AdminCategoriesPage() {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-gray-200 dark:bg-gray-700 text-sm font-semibold">
-              <th className="p-4">Фото</th>
-              <th className="p-4">Название ({lang.toUpperCase()})</th>
-              <th className="p-4 text-right">Действия</th>
+              <th className="p-4">
+                Photo <br /> Фото
+              </th>
+              <th className="p-4">
+                Name
+                <br /> Назва{' '}
+              </th>
+              <th className="p-4 text-right">
+                Actions
+                <br />
+                Дії
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -108,27 +125,34 @@ export default function AdminCategoriesPage() {
                 <td className="p-4 font-medium">
                   {category.title[lang] ||
                     category.title['ua'] ||
-                    'Без названия'}
+                    'No name / Без назви'}
                 </td>
                 <td className="p-4 text-right space-x-2">
-                  <Link
-                    href={`/${lang}/admin/categories/edit/${category._id}`}
-                    className="text-yellow-600 hover:text-yellow-700 dark:text-yellow-400 font-medium"
-                  >
-                    Редактировать
-                  </Link>
-                  <button
-                    onClick={() => handleDelete(category._id)}
-                    className="text-red-600 hover:text-red-700 dark:text-red-400 font-medium ml-4"
-                  >
-                    Удалить
-                  </button>
+                  <div className="flex gap-2 justify-end">
+                    <Link
+                      href={`/${lang}/admin/categories/edit/${category._id}`}
+                      className="text-yellow-500 hover:text-yellow-600  font-medium"
+                    >
+                      <td>
+                        Edit <br /> Редагувати
+                      </td>
+                    </Link>
+                    <button
+                      onClick={() => handleDelete(category._id)}
+                      className="text-red-700 hover:text-red-800  font-medium ml-4"
+                    >
+                      <td>
+                        Delete <br /> Видалити
+                      </td>
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
             {categories.length === 0 && (
               <tr>
                 <td colSpan={3} className="p-4 text-center text-gray-500">
+                  There are no categories yet. <br />
                   Категорий пока нет.
                 </td>
               </tr>

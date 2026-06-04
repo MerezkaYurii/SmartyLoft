@@ -38,6 +38,12 @@
   "description": "Opis",
   "buy": "Kup w 1 kliknięciu"
 },
+"CatalogSections": {
+  "name": "Nasze produkty:",
+  "loading": "Ładowanie...",
+  "error": "Błąd"
+  
+},
     "footer": {
         "text": "zrobione z"
     }

@@ -1,15 +1,24 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { initialCategories } from '@/src/data/categories-data';
 
+interface ICategory {
+  _id: string;
+  title: {
+    ua?: string;
+    pl?: string;
+    en?: string;
+    lt?: string;
+    [key: string]: string | undefined;
+  };
+}
 export default function CreateProductPage() {
   const router = useRouter();
   const params = useParams(); // Получаем параметры из URL
-  const lang = params.lang;
+  const lang = (params?.lang as string) || 'ua';
   // Стейт для выбора активной языковой вкладки в форме (по умолчанию 'ua')
   const [activeLang, setActiveLang] = useState<'ua' | 'pl' | 'en' | 'lt'>('ua');
   // Стейты для полей товара
@@ -27,13 +36,36 @@ export default function CreateProductPage() {
   const [depth, setDepth] = useState('');
 
   // 1. НОВЫЕ СТЕЙТЫ: Для категории (по умолчанию берем ID первой) и галочки новинки
-  const [category, setCategory] = useState(initialCategories[0]?.id || '');
+  const [category, setCategory] = useState('');
   const [isNewProduct, setIsNewProduct] = useState(false);
-
+  const [loadingCategories, setLoadingCategories] = useState<boolean>(true);
+  const [categories, setCategories] = useState<ICategory[]>([]);
   // Массив ссылок на загруженные медиафайлы (картинки и видео)
   const [mediaUrls, setMediaUrls] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  // ШАГ 1: Загружаем реальные категории из базы данных
+  useEffect(() => {
+    async function loadCategories() {
+      try {
+        const res = await fetch('/api/categories');
+        if (res.ok) {
+          const data = (await res.json()) as ICategory[];
+          setCategories(data);
+          // Автоматически выбираем первую категорию по умолчанию, если они есть
+          if (data.length > 0) {
+            setCategory(data[0]._id);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load categories:', error);
+      } finally {
+        setLoadingCategories(false);
+      }
+    }
+    loadCategories();
+  }, []);
 
   // Функции для удобного обновления конкретного языка
   const handleTitleChange = (lang: string, value: string) => {
@@ -133,7 +165,7 @@ Saving error: / Помилка збереження ${errData.error}`);
 
   return (
     <div className="container mx-auto p-6 max-w-2xl">
-      <h1 className="text-2xl font-bold mb-6 text-gray-950 dark:text-white ">
+      <h1 className="text-2xl font-normal mb-6 text-gray-950 dark:text-white ">
         Adding a new product / Додавання нового товару
       </h1>
       <Link
@@ -209,7 +241,11 @@ Saving error: / Помилка збереження ${errData.error}`);
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1 text-gray-950 dark:text-white">
-              Price / Ціна
+              Price EUR / Ціна EUR
+              <p className="text-xs font-light text-gray-900 dark:text-gray-200">
+                ! Here we specify the price in euros <br />! Тут ми вказуємо
+                ціну в євро
+              </p>
             </label>
             <input
               type="number"
@@ -245,9 +281,9 @@ Saving error: / Помилка збереження ${errData.error}`);
               onChange={(e) => setCategory(e.target.value)}
               className="w-full p-2.5 border rounded-lg bg-white dark:bg-gray-900 text-sm text-gray-900 dark:text-white border-gray-300 dark:border-gray-700"
             >
-              {initialCategories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.title}
+              {categories.map((cat) => (
+                <option key={cat._id} value={cat._id}>
+                  {cat.title[activeLang] || cat.title.ua || 'Без назви'}
                 </option>
               ))}
             </select>

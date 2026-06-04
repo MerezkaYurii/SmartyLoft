@@ -39,6 +39,11 @@
   "description": "Description",
   "buy": "Buy in 1 click"
 },
+"CatalogSections": {
+  "name": "Our products:",
+  "loading": "Loading...",
+  "error": "Error"
+},
   "footer": {
     "text": "made with"
    

@@ -4,7 +4,6 @@ import { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { initialCategories } from '@/src/data/categories-data';
 
 interface PageProps {
   params: Promise<{ lang: string; id: string }>;
@@ -13,7 +12,7 @@ interface PageProps {
 // Интерфейс для списка категорий
 interface ICategory {
   _id: string;
-  name: {
+  title: {
     ua?: string;
     pl?: string;
     en?: string;
@@ -48,10 +47,8 @@ export default function EditProductPage({ params }: PageProps) {
   // НОВЫЕ СТЕЙТЫ ДЛЯ КАТЕГОРИИ И НОВИНКИ
   const [category, setCategory] = useState('');
   const [isNewProduct, setIsNewProduct] = useState(false);
-  const [categories, setCategories] = useState<ICategory[]>(
-    initialCategories as unknown as ICategory[],
-  );
-
+  const [categories, setCategories] = useState<ICategory[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState<boolean>(true);
   // Функции обновления текста для конкретного языка
   const handleTitleChange = (lang: string, value: string) => {
     setTitle((prev) => ({ ...prev, [lang]: value }));
@@ -61,27 +58,23 @@ export default function EditProductPage({ params }: PageProps) {
     setDescription((prev) => ({ ...prev, [lang]: value }));
   };
 
-  // Загружаем список категорий для селекта
-  // useEffect(() => {
-  //   async function fetchCategories() {
-  //     try {
-  //       // const res = await fetch('/api/categories');
-  //       const res = await fetch(`${window.location.origin}/api/categories`);
-  //       if (res.ok) {
-  //         const data = await res.json();
-  //         setCategories(data);
-  //       } else {
-  //         console.error(
-  //           'Сервер вернул ошибку при загрузке категорий:',
-  //           res.status,
-  //         );
-  //       }
-  //     } catch (err) {
-  //       console.error('Ошибка загрузки категорий:', err);
-  //     }
-  //   }
-  //   fetchCategories();
-  // }, []);
+  // ШАГ 1: Загружаем список реальных категорий из базы данных
+  useEffect(() => {
+    async function loadCategories() {
+      try {
+        const res = await fetch('/api/categories');
+        if (res.ok) {
+          const data = (await res.json()) as ICategory[];
+          setCategories(data);
+        }
+      } catch (error) {
+        console.error('Failed to load categories:', error);
+      } finally {
+        setLoadingCategories(false);
+      }
+    }
+    loadCategories();
+  }, []);
 
   // Загружаем данные товара
   useEffect(() => {
@@ -243,7 +236,7 @@ export default function EditProductPage({ params }: PageProps) {
   if (loading)
     return (
       <p className="text-center p-6 text-gray-500">
-        Loading data / Завантаження微 даних...
+        Loading data / Завантаження даних...
       </p>
     );
 
@@ -327,18 +320,22 @@ export default function EditProductPage({ params }: PageProps) {
             <label className="block text-sm font-medium mb-1 text-gray-300">
               Category / Категорія
             </label>
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500"
-            >
-              <option value="">Without category / Без категорії</option>
-              {categories.map((cat) => (
-                <option key={cat._id} value={cat._id}>
-                  {cat.name[activeLang] || cat.name['ua'] || 'Unnamed'}
-                </option>
-              ))}
-            </select>
+            {loadingCategories ? (
+              <p className="text-xs text-gray-500 p-2">Loading categories...</p>
+            ) : (
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500"
+              >
+                <option value="">Without category / Без категорії</option>
+                {categories.map((cat) => (
+                  <option key={cat._id} value={cat._id}>
+                    {cat.title[activeLang] || cat.title.ua || 'Unnamed'}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
 
           <div className="flex items-center gap-2 pt-5">
@@ -360,7 +357,14 @@ export default function EditProductPage({ params }: PageProps) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Price / Цена</label>
+          <label className="block text-sm font-medium mb-1">
+            {' '}
+            Price EUR / Ціна EUR
+            <p className="text-xs font-light text-gray-900 dark:text-gray-200">
+              ! Here we specify the price in euros <br />! Тут ми вказуємо ціну
+              в євро
+            </p>
+          </label>
           <input
             type="number"
             value={price}
