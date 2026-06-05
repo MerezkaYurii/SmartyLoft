@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 interface IRates {
@@ -16,6 +18,9 @@ export default function CurrencyRatesPage() {
     text: string;
     isError: boolean;
   } | null>(null);
+
+  const params = useParams(); // Получаем параметры из URL
+  const lang = (params?.lang as string) || 'ua';
 
   // Загружаем текущие курсы из базы
   useEffect(() => {
@@ -81,17 +86,29 @@ export default function CurrencyRatesPage() {
   if (loading) {
     return (
       <p className="text-center p-6 text-gray-500">
-        Завантаження курсів валют...
+        Loading currency rates / Завантаження курсів валют...
       </p>
     );
   }
 
   return (
     <div className="p-6 max-w-xl mx-auto dark:text-white">
-      <h1 className="text-2xl font-medium mb-6 text-gray-950 dark:text-white">
+      <Link
+        href={`/${lang}/admin/products`}
+        className=" block text-right text-sm text-gray-900 hover:underline  hover:text-gray-700 dark:text-gray-200 dark:hover:text-white  whitespace-nowrap "
+      >
+        ← Back / Назад
+      </Link>
+      <h1 className="text-2xl font-medium mb-3 text-gray-950 dark:text-white">
+        Exchange rate management <br />
         Управління курсами валют (База: 1 EUR)
       </h1>
-
+      <p className="text-[14px]">
+        ! The price list is in Euros, and here we set the exchange rate
+        coefficient.
+        <br />! У прайсі вказується валюта євро, а тут ми ставимо коефіцієнт
+        курсу валют.
+      </p>
       {message && (
         <div
           className={`mb-4 p-3 rounded border ${
@@ -152,7 +169,7 @@ export default function CurrencyRatesPage() {
           className="w-full mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-lg text-sm transition-colors"
           disabled={saving}
         >
-          {saving ? 'Збереження...' : 'Зберегти курси'}
+          {saving ? 'Saving / Збереження...' : 'Save courses / Зберегти курси'}
         </button>
       </form>
     </div>

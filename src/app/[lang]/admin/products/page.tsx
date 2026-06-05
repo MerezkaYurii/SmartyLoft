@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useParams } from 'next/navigation';
 
 interface Product {
   _id: string;
@@ -15,7 +16,8 @@ interface Product {
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
-
+  const params = useParams();
+  const lang = (params?.lang as string) || 'ua';
   useEffect(() => {
     async function fetchProducts() {
       setLoading(true);
@@ -78,9 +80,15 @@ export default function AdminProductsPage() {
 
   return (
     <div className="container mx-auto p-6 max-w-6xl">
+      <Link
+        href={`/${lang}`}
+        className="block text-center text-sm text-gray-900 hover:underline  hover:text-gray-700 dark:text-gray-200 dark:hover:text-white  whitespace-nowrap "
+      >
+        ← Back to Site / Повернутися на сайт
+      </Link>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-medium text-gray-950 dark:text-white">
-          Product management / Управління товарами
+        <h1 className="text-3xl  font-light text-gray-950 dark:text-white">
+          Product management <br /> Управління товарами
         </h1>
         <div className="flex flex-col gap-3">
           <Link
