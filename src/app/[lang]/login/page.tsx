@@ -2,33 +2,23 @@
 
 import { useState } from 'react';
 import { useDictionary } from '@/src/hooks/useDictionary';
-// Импортируем стандартный метод входа на клиенте из next-auth
 import { signIn } from 'next-auth/react';
 
 export default function AuthPage() {
-  const [isRegister, setIsRegister] = useState(false);
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
   const dict = useDictionary();
 
   if (!dict) return <div className="text-center pt-10">Loading...</div>;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Функция для отправки Магической ссылки на Email
+  const handleEmailLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (isRegister) {
-      console.log('Регистрация:', { name, email, password });
-    } else {
-      console.log('Вход:', { email, password });
-    }
+    signIn('nodemailer', { email, callbackUrl: '/' });
   };
 
-  // Функция для обработки клика по кнопке Google
+  // Функция для входа через Google
   const handleGoogleSignIn = async () => {
     try {
-      // Вызываем вход через Google.
-      // callbackUrl указывает, куда вернуть пользователя после успешного входа
       await signIn('google', { callbackUrl: '/' });
     } catch (error) {
       console.error('Ошибка входа через Google:', error);
@@ -39,26 +29,11 @@ export default function AuthPage() {
     <div className="flex min-h-[calc(100vh-70px)] items-center justify-center px-4">
       <div className="w-full max-w-md bg-white/80 dark:bg-gray-900/80 backdrop-blur-md p-8 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 transition-colors duration-500">
         <h2 className="text-2xl font-bold text-center text-black dark:text-white mb-6">
-          {isRegister ? 'Регистрация аккаунта' : 'Войти в аккаунт'}
+          Войти в SmartyLoft
         </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {isRegister && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Имя
-              </label>
-              <input
-                type="text"
-                placeholder="Иван Иванов"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required={isRegister}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          )}
-
+        {/* Форма отправки ссылки на почту */}
+        <form onSubmit={handleEmailLogin} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Email
@@ -73,25 +48,11 @@ export default function AuthPage() {
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Пароль
-            </label>
-            <input
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
           <button
             type="submit"
             className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors mt-2"
           >
-            {isRegister ? 'Зарегистрироваться' : 'Войти'}
+            Получить ссылку для входа
           </button>
         </form>
 
@@ -117,8 +78,6 @@ export default function AuthPage() {
           <svg
             className="w-5 h-5"
             viewBox="0 0 24 24"
-            width="24"
-            height="24"
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
@@ -140,30 +99,6 @@ export default function AuthPage() {
           </svg>
           <span>Войти через Google</span>
         </button>
-
-        <div className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
-          {isRegister ? (
-            <p>
-              Уже есть аккаунт?{' '}
-              <button
-                onClick={() => setIsRegister(false)}
-                className="text-blue-600 dark:text-blue-400 font-medium hover:underline"
-              >
-                Войти
-              </button>
-            </p>
-          ) : (
-            <p>
-              Впервые у нас?{' '}
-              <button
-                onClick={() => setIsRegister(true)}
-                className="text-blue-600 dark:text-blue-400 font-medium hover:underline"
-              >
-                Создать аккаунт
-              </button>
-            </p>
-          )}
-        </div>
       </div>
     </div>
   );
