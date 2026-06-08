@@ -5,7 +5,9 @@
         "darkMode": "Tamsus režimas",
         "lightMode": "Šviesus režimas",
         "contacts": "Kontaktai",
-        "categories": "Mūsų produktai"
+        "categories": "Mūsų produktai",
+        "login": "Prisijungti",
+        "logout": "Atsijungti iš paskyros"
     },
     "contacts": {
         "title": "Susisiekti su mumis",
@@ -42,6 +44,13 @@
   "name": "Mūsų produktai:",
   "loading": "Užkraunama...",
   "error": "Klaida"
+},
+"AuthPage": {
+  "title": "Prisijungti prie SmartyLoft",
+    "button": "Gauti prisijungimo nuorodą",
+    "span": "arba",
+    "google": "Prisijungti su Google"
+
 },
     "footer": {
         "text": "pagaminta su"

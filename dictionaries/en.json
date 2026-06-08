@@ -5,7 +5,9 @@
     "darkMode": "Dark Mode",
     "lightMode": "Light Mode",
     "contacts": "Contacts",
-    "categories": "Our products"
+    "categories": "Our products",
+    "login": "Login",
+    "logout": "Logout from account"
   },
   "contacts": {
     "title": "Contact Us",
@@ -43,6 +45,13 @@
   "name": "Our products:",
   "loading": "Loading...",
   "error": "Error"
+},
+"AuthPage": {
+  "title": "Login to SmartyLoft",
+  "button": "Get login link",
+  "span": "or",
+  "google": "Login with Google"
+
 },
   "footer": {
     "text": "made with"

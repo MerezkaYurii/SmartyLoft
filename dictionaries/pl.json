@@ -5,7 +5,9 @@
         "darkMode": "Tryb ciemny",
         "lightMode": "Tryb jasny",
         "contacts": "Kontakty",
-        "categories": "Nasze produkty"
+        "categories": "Nasze produkty",
+        "login": "Zaloguj się",
+        "logout": "Wyloguj się z konta"
     },
     "contacts": {
         "title": "Skontaktuj się z nami",
@@ -43,6 +45,13 @@
   "loading": "Ładowanie...",
   "error": "Błąd"
   
+},
+"AuthPage": {
+  "title": "Zaloguj się do SmartyLoft",
+    "button": "Otrzymaj link do logowania",
+    "span": "lub",
+    "google": "Zaloguj się przez Google"
+
 },
     "footer": {
         "text": "zrobione z"

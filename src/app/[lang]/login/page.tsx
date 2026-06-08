@@ -29,7 +29,7 @@ export default function AuthPage() {
     <div className="flex min-h-[calc(100vh-70px)] items-center justify-center px-4">
       <div className="w-full max-w-md bg-white/80 dark:bg-gray-900/80 backdrop-blur-md p-8 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 transition-colors duration-500">
         <h2 className="text-2xl font-bold text-center text-black dark:text-white mb-6">
-          Войти в SmartyLoft
+          {dict.AuthPage.title}
         </h2>
 
         {/* Форма отправки ссылки на почту */}
@@ -52,7 +52,7 @@ export default function AuthPage() {
             type="submit"
             className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors mt-2"
           >
-            Получить ссылку для входа
+            {dict.AuthPage.button}
           </button>
         </form>
 
@@ -63,7 +63,7 @@ export default function AuthPage() {
           </div>
           <div className="relative flex justify-center text-sm">
             <span className="px-2 bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 transition-colors">
-              или
+              {dict.AuthPage.span}
             </span>
           </div>
         </div>
@@ -97,7 +97,7 @@ export default function AuthPage() {
               fill="#EA4335"
             />
           </svg>
-          <span>Войти через Google</span>
+          <span>{dict.AuthPage.google}</span>
         </button>
       </div>
     </div>
