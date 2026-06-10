@@ -39,7 +39,7 @@
 "ProductPage": {
   "back": "Back to home",
   "description": "Description",
-  "buy": "Buy in 1 click"
+  "buy": "Order in one click"
 },
 "CatalogSections": {
   "name": "Our products:",
@@ -53,6 +53,23 @@
   "google": "Login with Google"
 
 },
+
+"QuickOrderButton": {
+  "title": "Order in one click",
+  "productTitle": "You are ordering: ",
+  "name": "Name",
+  "phone": "Phone",
+  "confirm": "Confirm",
+  "cancel": "Cancel",
+  "errorFields": "Please fill in all fields",
+  "errorPhone": "Phone number is too short or too long (should be 7 to 15 digits)",
+  "success": "Order created successfully!",
+  "error": "Error. Please try again.",
+  "loading": "Sending..."
+  
+},
+
+
   "footer": {
     "text": "made with"
    

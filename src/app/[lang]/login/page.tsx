@@ -3,25 +3,31 @@
 import { useState } from 'react';
 import { useDictionary } from '@/src/hooks/useDictionary';
 import { signIn } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
 
 export default function AuthPage() {
   const [email, setEmail] = useState('');
   const dict = useDictionary();
-
+  const pathname = usePathname();
+  const currentLocale = pathname?.split('/')[1] || 'en';
   if (!dict) return <div className="text-center pt-10">Loading...</div>;
 
   // Функция для отправки Магической ссылки на Email
   const handleEmailLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    signIn('nodemailer', { email, callbackUrl: '/' });
+    document.cookie = `NEXT_LOCALE=${currentLocale}; path=/; max-age=3600`;
+    signIn('nodemailer', {
+      email,
+      callbackUrl: `/${currentLocale}`,
+    });
   };
 
   // Функция для входа через Google
   const handleGoogleSignIn = async () => {
     try {
-      await signIn('google', { callbackUrl: '/' });
+      await signIn('google', { callbackUrl: `/${currentLocale}` });
     } catch (error) {
-      console.error('Ошибка входа через Google:', error);
+      console.error('Google login error / Помилка входу в Google:', error);
     }
   };
 

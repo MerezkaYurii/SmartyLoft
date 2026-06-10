@@ -74,6 +74,12 @@ export default async function CategoryPage({ params }: Props) {
     <section className="px-2 py-0.5 sm:px-4 sm:py-1 lg:px-6 lg:py-2 max-w-7xl mx-auto min-h-screen pt-[90px]">
       <div className="container mx-auto py-6 bg-[#EAE6DF] dark:bg-[#2A2B2B] rounded-2xl">
         {/* Хлебные крошки и заголовок */}
+        <Link
+          href={`/${lang}/`}
+          className="block text-sm text-gray-900 hover:underline text-center hover:text-gray-700 dark:text-gray-200 dark:hover:text-white  whitespace-nowrap "
+        >
+          ← Back / Назад
+        </Link>
         <div className="pl-10 text-left mb-6">
           <span className="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">
             {dict.header.categories || 'Каталог'}

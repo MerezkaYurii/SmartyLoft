@@ -8,6 +8,7 @@ import StoreProvider from '@/src/redax/StoreProvider';
 import DictionaryInitializer from '@/src/redax/DictionaryInitializer';
 import Image from 'next/image';
 import { SessionProvider } from 'next-auth/react';
+import { Toaster } from 'react-hot-toast';
 
 export const metadata: Metadata = {
   title: 'Smartyloft',
@@ -63,7 +64,10 @@ export default async function RootLayout({
 
             <div className="relative z-10 flex flex-col grow min-h-screen">
               <Header />
-              <main className="grow pt-[70px]">{children}</main>
+              <main className="grow pt-[70px]">
+                {children}
+                <Toaster position="top-center" reverseOrder={false} />
+              </main>
 
               <footer className=" relative z-20 bg-white/70 dark:bg-black/70 backdrop-blur-sm">
                 <Footer />

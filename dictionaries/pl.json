@@ -38,7 +38,7 @@
   "ProductPage": {
   "back": "Wróć do strony głównej",
   "description": "Opis",
-  "buy": "Kup w 1 kliknięciu"
+  "buy": "Zamów w jednym kliknięciu"
 },
 "CatalogSections": {
   "name": "Nasze produkty:",
@@ -52,6 +52,19 @@
     "span": "lub",
     "google": "Zaloguj się przez Google"
 
+},
+"QuickOrderButton": {
+  "title": "Zamów w jednym kliknięciu",
+  "productTitle": "Jesteś zamawiasz: ",
+  "name": "Imię",
+  "phone": "Telefon",
+  "confirm": "Potwierdź",
+  "cancel": "Anuluj",
+  "errorFields": "Proszę uzupełnić wszystkie pola",
+  "errorPhone": "Numer telefonu jest za krótki lub za długi (musi zawierać od 7 do 15 cyfr)",
+  "success": "Zamówienie zostało pomyślnie utworzone!",
+  "error": "Błąd. Spróbuj ponownie.",
+  "loading": "Wysyłanie..."
 },
     "footer": {
         "text": "zrobione z"

@@ -38,7 +38,7 @@
   "ProductPage": {
     "back": "Atgal į pagrindinį puslapį",
     "description": "Aprašymas",
-    "buy": "Pirkti 1 paspaudimu"
+    "buy": "Užsakyti vienu paspaudimu"
   },
   "CatalogSections": {
   "name": "Mūsų produktai:",
@@ -51,6 +51,19 @@
     "span": "arba",
     "google": "Prisijungti su Google"
 
+},
+"QuickOrderButton": {
+  "title": "Užsakyti vienu paspaudimu",
+  "productTitle": "Jūs užsakote: ",
+  "name": "Vardas",
+  "phone": "Telefonas",
+  "confirm": "Patvirtinti",
+  "cancel": "Atšaukti",
+  "errorFields": "Prašome užpildyti visus laukus",
+  "errorPhone": "Telefono numeris per trumpas arba per ilgas (turi būti nuo 7 iki 15 skaitmenų)",
+  "success": "Užsakymas sėkmingai sukurtas!",
+  "error": "Klaida. Pabandykite dar kartą.",
+  "loading": "Siunčiama..."
 },
     "footer": {
         "text": "pagaminta su"

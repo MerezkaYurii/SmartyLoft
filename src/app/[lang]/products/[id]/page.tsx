@@ -1,4 +1,5 @@
 import ProductGallery from '@/src/components/ProductGallery';
+import QuickOrderButton from '@/src/components/QuickOrderButton';
 import Product from '@/src/DataBase/models/Product';
 import { formatPrice } from '@/src/lib/currency';
 import { getDictionary } from '@/src/lib/get-dictionary';
@@ -72,10 +73,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 </p>
               </div>
 
-              {/* Заглушка кнопки заказа — на следующем шаге сделаем форму */}
-              <button className="w-full md:w-auto px-8 py-4 bg-[#0f3995] hover:bg-[#0f3995]/80  text-white font-semibold uppercase tracking-widest text-sm rounded-2xl transition-colors duration-300">
-                {dict.ProductPage.buy}
-              </button>
+              {/* Заменили старую кнопку-заглушку на интерактивную */}
+              <QuickOrderButton
+                buttonText={dict.ProductPage.buy}
+                lang={lang}
+                productId={product.id}
+                productTitle={product.title[lang] || product.title['ua'] || ''}
+              />
             </div>
           </div>
         </div>

@@ -8,7 +8,7 @@ export async function GET() {
     await initMongoConnection();
 
     // Сортируем по дате создания (новые вверху)
-    const categories = await Category.find({}).sort({ createdAt: -1 });
+    const categories = await Category.find({}).sort({ createdAt: 1 });
 
     return NextResponse.json(categories, { status: 200 });
   } catch (error: unknown) {
