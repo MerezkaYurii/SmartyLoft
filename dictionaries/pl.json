@@ -25,7 +25,10 @@
         "success": "Dziękujemy! Skontaktujemy się z Tobą wkrótce.",
         "error": "Błąd. Spróbuj ponownie.",
         "btn": "Wyślij",
-        "loding": "Wysyłanie..."
+        "loding": "Wysyłanie...",
+        "addFiles": "Załącz pliki",
+        "removeFile": "Usuń plik",
+        "chooseFileBtn": "Wybierz pliki..."
     },
     "HomePageSlider": {
         "title": "Meble designerskie i kompleksy roślinne.",

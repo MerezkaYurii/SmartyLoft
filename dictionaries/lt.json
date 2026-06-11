@@ -25,7 +25,10 @@
         "success": "Ačiū! Mes susisieksime su jumis greitai.",
         "error": "Klaida. Pabandykite dar kartą.",
         "btn": "Siųsti",
-        "loding": "Siunčiama..."
+        "loding": "Siunčiama...",
+        "addFiles": "Prisegti failus",
+        "removeFile": "Pašalinti failą",
+        "chooseFileBtn": "Pasirinkti failus..."
     },
     "HomePageSlider": {
         "title": "Dizainerio baldai ir augalų kompleksai.",

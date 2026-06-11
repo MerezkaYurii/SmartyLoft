@@ -1,12 +1,16 @@
-'use client';
-
+import Link from 'next/link';
 import data from '../data/siteData.json';
-import { useDictionary } from '../hooks/useDictionary';
 
 import ModalOrder from './ModalOrder';
+import { Dictionary } from '../i18n-config';
 
-export default function Contacts() {
-  const dict = useDictionary();
+export default function Contacts({
+  lang,
+  dict,
+}: {
+  lang: string;
+  dict: Dictionary;
+}) {
   const dataContacts = data.dataContacts;
   const dataSocialLinks = data.dataSocialLinks;
   const mailTo = `mailto:${dataContacts.email}?subject=Заказ%20сайта`;
@@ -16,20 +20,26 @@ export default function Contacts() {
       id="contact"
       className="px-2 py-2 sm:px-4 sm:py-4 lg:px-6 lg:py-6 "
     >
+      <Link
+        href={`/${lang}/`}
+        className="text-sm text-gray-900 hover:underline  hover:text-gray-700 dark:text-gray-200 dark:hover:text-white  whitespace-nowrap text-center block"
+      >
+        ← Back / Назад
+      </Link>
       <div className="container mx-auto  py-10 text-center  bg-[#EAE6DF] dark:bg-[#2A2B2B] rounded-2xl mb-[15px]">
-        <h2 className="text-lg sm:text-xl md:text-2xl  font-bold mb-3 dark:text-white ">
+        <h2 className="text-lg sm:text-xl md:text-2xl  font-medium mb-3 dark:text-white ">
           {dict.contacts.title}
         </h2>
         <h3 className="text-sm sm:text-base md:text-lg  font-medium mb-3 dark:text-white">
           {dict.contacts.desc}
         </h3>
-        <p className="text-sm sm:text-base md:text-lg mb-2 dark:text-white">
+        <p className="text-sm sm:text-base md:text-lg mb-2 dark:text-white font-medium">
           {dict.contacts.phone}:{' '}
           <a href={`tel:${dataContacts.phone}`} className="underline">
             {dataContacts.phone}
           </a>
         </p>
-        <p className="text-sm sm:text-base md:text-lg mb-3 dark:text-white">
+        <p className="text-sm sm:text-base md:text-lg mb-3 dark:text-white font-medium">
           {dict.contacts.email}:{' '}
           <a href={mailTo} className="underline">
             {dataContacts.email}

@@ -25,7 +25,10 @@
     "success": "Thank you! We will be in touch soon.",
     "error": "Error. Please try again.",
     "btn": "Send",
-    "loding": "Sending..."
+    "loding": "Sending...",
+    "addFiles": "Attach files",
+    "removeFile": "Remove file",
+    "chooseFileBtn": "Choose files..."
   },
   "HomePageSlider": {
     "title": "Designer furniture and plant complexes.",

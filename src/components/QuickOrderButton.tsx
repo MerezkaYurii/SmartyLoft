@@ -10,6 +10,7 @@ interface QuickOrderButtonProps {
   lang: string;
   productId: string;
   productTitle: string;
+  buttonText?: string;
 }
 
 export default function QuickOrderButton({

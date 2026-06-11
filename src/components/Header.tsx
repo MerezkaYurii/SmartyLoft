@@ -53,7 +53,7 @@ export default function Header() {
 
         <Link
           href={`/${currentLocale}/contacts`}
-          className="flex items-center font-bold text-black dark:text-white"
+          className="flex items-center font-medium text-black dark:text-white"
         >
           {dict.header.contacts}
         </Link>
