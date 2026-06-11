@@ -14,6 +14,7 @@ export interface IQuickOrder extends Document {
   name: string;
   phone: string;
   email?: string;
+  comment?: string;
   config: IConstructorConfig; // Тут будут храниться размеры, секции, цвет и т.д.
   status: 'pending' | 'completed' | 'canceled';
   locale: string; // Запоминаем язык, с которого пришел заказ
@@ -41,6 +42,10 @@ const QuickOrderSchema: Schema<IQuickOrder> = new Schema(
       type: String,
       trim: true,
       lowercase: true,
+    },
+    comment: {
+      type: String,
+      default: '',
     },
     config: {
       type: Schema.Types.Mixed,

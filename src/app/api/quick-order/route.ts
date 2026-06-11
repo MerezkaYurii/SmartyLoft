@@ -2,11 +2,17 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/src/auth';
 import { initMongoConnection } from '@/src/lib/mongoose';
 import QuickOrder from '@/src/DataBase/models/QuickOrder';
+import Product from '@/src/DataBase/models/Product';
+import CurrencyRate from '@/src/DataBase/models/CurrencyRate'; // ИМПОРТИРОВАЛИ МОДЕЛЬ КУРСОВ
 import mongoose from 'mongoose';
+import Stripe from 'stripe';
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
+  apiVersion: '2026-05-27.dahlia',
+});
 
 export async function POST(req: Request) {
   try {
-    // 1. Проверяем авторизацию через Auth.js v5
     const session = await auth();
 
     if (!session || !session.user?.email) {
@@ -16,9 +22,8 @@ export async function POST(req: Request) {
       );
     }
 
-    // 2. Получаем данные из тела запроса
     const body = await req.json();
-    const { name, phone, productId, lang } = body;
+    const { name, phone, productId, lang, comment } = body;
 
     if (!name || !phone || !productId) {
       return NextResponse.json(
@@ -26,7 +31,7 @@ export async function POST(req: Request) {
         { status: 400 },
       );
     }
-    // Валидация регулярным выражением на бэкенде
+
     const cleanedPhone = phone.replace(/[\s\-\(\)]/g, '');
     const globalPhoneRegex = /^\+?\d{7,15}$/;
 
@@ -36,11 +41,9 @@ export async function POST(req: Request) {
         { status: 400 },
       );
     }
-    // 3. Подключаемся к базе данных
+
     await initMongoConnection();
 
-    // Находим пользователя по email (Auth.js v5 обычно хранит id в session.user.id,
-    // но поиск по email — самый надежный вариант)
     const User =
       mongoose.models.User || mongoose.model('User', new mongoose.Schema({}));
     const userInDb = await User.findOne({ email: session.user.email });
@@ -52,24 +55,100 @@ export async function POST(req: Request) {
       );
     }
 
-    // 4. Формируем конфигурацию заказа
+    const targetProduct = await Product.findById(productId);
+    if (!targetProduct) {
+      return NextResponse.json(
+        { error: 'Product not found / Товар не знайдено' },
+        { status: 404 },
+      );
+    }
+
+    const currentLocale = lang || 'en';
+
+    // 1. ПОЛУЧАЕМ ЖИВЫЕ КУРСЫ ИЗ БАЗЫ ДАННЫХ (с дефолтным фолбеком, если база пуста)
+    const mongoRates = await CurrencyRate.findOne().lean();
+    const uahRate = mongoRates?.uah || 45;
+    const plnRate = mongoRates?.pln || 4.3;
+    const usdRate = mongoRates?.usd || 1.08;
+
+    const basePriceInEur = parseFloat(targetProduct.price);
+
+    let currency = 'eur';
+    let finalPrice = basePriceInEur;
+
+    // 2. ДИНАМИЧЕСКИЙ РАСЧЕТ ЦЕНЫ И ВАЛЮТЫ
+    if (currentLocale === 'ua') {
+      currency = 'uah';
+      finalPrice = basePriceInEur * uahRate;
+    } else if (currentLocale === 'pl') {
+      currency = 'pln';
+      finalPrice = basePriceInEur * plnRate;
+    } else if (currentLocale === 'en') {
+      currency = 'usd';
+      finalPrice = basePriceInEur * usdRate;
+    } else if (currentLocale === 'lt') {
+      currency = 'eur';
+      finalPrice = basePriceInEur; // Литва — базовая цена в евро
+    }
+
+    const priceInCents = Math.round(finalPrice * 100);
+    const productTitle =
+      targetProduct.title[currentLocale] ||
+      targetProduct.title['en'] ||
+      'Product';
+
     const configData = {
       productId: productId,
     };
 
-    // 5. Создаем запись в базе данных
     const newOrder = await QuickOrder.create({
       userId: userInDb._id,
       name: name.trim(),
       phone: phone.trim(),
       email: session.user.email,
+      comment: comment.trim(),
       config: configData,
-      locale: lang || 'en',
+      locale: currentLocale,
       status: 'pending',
     });
 
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+
+    // Переводим локаль для Stripe (для украинского нужна 'uk')
+    const stripeLocale = currentLocale === 'ua' ? 'uk' : currentLocale;
+
+    // 3. СОЗДАНИЕ СЕССИИ STRIPE С ГАРАНТИРОВАННОЙ ЛОКАЛЬЮ
+    const stripeSession = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      mode: 'payment',
+      customer_email: session.user.email,
+      client_reference_id: newOrder._id.toString(),
+
+      // Локаль управляет языком интерфейса Stripe и отображением символов валют ($ / грн / zł)
+      locale: stripeLocale as Stripe.Checkout.SessionCreateParams.Locale,
+
+      line_items: [
+        {
+          price_data: {
+            currency: currency,
+            product_data: {
+              name: productTitle,
+              images:
+                targetProduct.images && targetProduct.images.length > 0
+                  ? [targetProduct.images[0]]
+                  : [],
+            },
+            unit_amount: priceInCents,
+          },
+          quantity: 1,
+        },
+      ],
+      success_url: `${siteUrl}/${currentLocale}/profile?success=true`,
+      cancel_url: `${siteUrl}/${currentLocale}`,
+    });
+
     return NextResponse.json(
-      { success: true, orderId: newOrder._id },
+      { success: true, orderId: newOrder._id, url: stripeSession.url },
       { status: 201 },
     );
   } catch (error: unknown) {

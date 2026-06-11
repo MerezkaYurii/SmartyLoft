@@ -68,7 +68,9 @@
   "errorPhone": "Phone number is too short or too long (should be 7 to 15 digits)",
   "success": "Order created successfully!",
   "error": "Error. Please try again.",
-  "loading": "Sending..."
+  "loading": "Sending...",
+  "comment": "Comment",
+  "phComment": "Your wishes..."
   
 },
 

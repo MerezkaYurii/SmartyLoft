@@ -28,7 +28,7 @@ export default function QuickOrderButton({
   const [name, setName] = useState(session?.user?.name || '');
   const [phone, setPhone] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
+  const [comment, setComment] = useState(''); // Стейт для комментария
   const handleOrderClick = () => {
     if (!session) {
       const callbackUrl = encodeURIComponent(pathname);
@@ -38,6 +38,7 @@ export default function QuickOrderButton({
         setName(session.user.name);
       }
       setPhone('');
+      setComment('');
       setIsOpen(true);
     }
   };
@@ -71,15 +72,21 @@ export default function QuickOrderButton({
         headers: {
           'Content-Type': 'application/json',
         },
+        cache: 'no-store',
         body: JSON.stringify({
           name: name.trim(),
           phone: formattedPhone,
+          comment: comment.trim(),
           productId,
           lang,
         }),
       });
 
       const data = await response.json();
+
+      ///////////////////////
+      console.log('--- FRONTEND RESPONSE DATA ---', data);
+      //////////////////////////
 
       if (!response.ok) {
         throw new Error(data.error || 'Something went wrong');
@@ -91,6 +98,12 @@ export default function QuickOrderButton({
       );
       setIsOpen(false);
       setPhone('');
+      setComment('');
+
+      // НАЧАЛО ИЗМЕНЕНИЙ: Если бэкенд вернул ссылку Stripe — перенаправляем на оплату
+      if (data.url) {
+        window.location.href = data.url;
+      }
     } catch (error) {
       const err = error instanceof Error ? error : new Error('Unknown error');
       // Заменили на красивый toast.error
@@ -171,6 +184,22 @@ export default function QuickOrderButton({
                     required
                   />
                 </div>
+              </div>
+
+              {/* НОВОЕ ПОЛЕ: Комментарий к быстрому заказу */}
+              <div>
+                <label className="block text-xs uppercase tracking-wider font-semibold mb-1 text-gray-600 dark:text-gray-400">
+                  {dict.QuickOrderButton.comment || 'Comment'}
+                </label>
+                <textarea
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  rows={3}
+                  className="w-full px-4 py-2.5 rounded-xl bg-white dark:bg-[#1F2020] border border-gray-300 dark:border-gray-600 focus:outline-none focus:border-[#0f3995] text-gray-900 dark:text-gray-100 transition-colors resize-none"
+                  placeholder={
+                    dict.QuickOrderButton.phComment || 'Your wishes...'
+                  }
+                />
               </div>
 
               <div className="flex justify-end gap-3 pt-4">

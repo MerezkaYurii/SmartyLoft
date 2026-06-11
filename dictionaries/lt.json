@@ -66,7 +66,9 @@
   "errorPhone": "Telefono numeris per trumpas arba per ilgas (turi būti nuo 7 iki 15 skaitmenų)",
   "success": "Užsakymas sėkmingai sukurtas!",
   "error": "Klaida. Pabandykite dar kartą.",
-  "loading": "Siunčiama..."
+  "loading": "Siunčiama...",
+  "comment": "Komentaras",
+  "phComment": "Jūsų pageidavimai..."
 },
     "footer": {
         "text": "pagaminta su"

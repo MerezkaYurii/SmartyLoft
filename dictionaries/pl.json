@@ -67,7 +67,9 @@
   "errorPhone": "Numer telefonu jest za krótki lub za długi (musi zawierać od 7 do 15 cyfr)",
   "success": "Zamówienie zostało pomyślnie utworzone!",
   "error": "Błąd. Spróbuj ponownie.",
-  "loading": "Wysyłanie..."
+  "loading": "Wysyłanie...",
+  "comment": "Komentarz",
+  "phComment": "Twoje życzenia..."
 },
     "footer": {
         "text": "zrobione z"
