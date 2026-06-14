@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface IOrder {
   _id: string;
@@ -82,28 +83,34 @@ export default function AdminOrdersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#1F2020] text-gray-100 p-6">
+    <div className="container mx-auto p-6 max-w-6xl mb-20">
       <div className="max-w-5xl mx-auto">
-        <h1 className="text-3xl font-bold uppercase tracking-wide mb-8 border-b border-gray-700 pb-4">
+        <Link
+          href={`/admin/products`}
+          className="block text-center text-sm text-gray-900 hover:underline  hover:text-gray-700 dark:text-gray-200 dark:hover:text-white  whitespace-nowrap "
+        >
+          ← Back / Повернутися
+        </Link>
+        <h1 className="text-3xl font-medium  text-white tracking-wide mb-8 ">
           Orders / Замовлення
         </h1>
 
         {orders.length === 0 ? (
-          <p className="text-gray-400 italic">
+          <p className="text-gray-200 italic">
             No orders found / Замовлень не знайдено
           </p>
         ) : (
           <div className="overflow-x-auto bg-[#2A2B2B] rounded-2xl border border-gray-700 shadow-xl">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-[#151616] text-xs uppercase tracking-wider font-semibold border-b border-gray-700 text-gray-400">
+                <tr className="bg-[#151616] text-xs  tracking-wider font-semibold border-b border-gray-700 text-white">
                   <th className="p-4">Customer / Клієнт</th>
                   <th className="p-4">Product / Товар</th>
                   <th className="p-4">Date / Дата</th>
                   <th className="p-4 text-right">Actions / Дії</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-700 text-sm">
+              <tbody className="divide-y divide-gray-400 text-sm">
                 {orders.map((order) => {
                   const productTitle =
                     order.product?.title?.[currentLocale] ||
@@ -164,13 +171,13 @@ export default function AdminOrdersPage() {
                               `/${currentLocale}/admin/orders/${order._id}`,
                             )
                           }
-                          className="px-3 py-1.5 text-xs font-medium uppercase tracking-wider bg-[#3A3B3B] text-gray-200 rounded-lg hover:bg-[#4A4B4B] transition-colors border border-gray-600"
+                          className="px-3 py-1.5 text-xs font-medium  tracking-wider bg-[#3A3B3B] text-white rounded-lg hover:bg-[#4A4B4B] transition-colors border border-gray-600"
                         >
                           Edit / Редагувати
                         </button>
                         <button
                           onClick={() => handleDelete(order._id)}
-                          className="px-3 py-1.5 text-xs font-medium uppercase tracking-wider bg-transparent text-rose-500 rounded-lg hover:bg-rose-950/30 transition-colors"
+                          className="px-3 py-1.5 text-xs font-medium  tracking-wider bg-transparent text-red-500 hover:text-red-600 rounded-lg transition-colors"
                         >
                           Delete / Видалити
                         </button>

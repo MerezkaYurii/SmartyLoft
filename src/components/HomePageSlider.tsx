@@ -120,11 +120,11 @@ export default function HomePageSlider() {
             <svg className="w-40 h-10 sm:w-50 sm:h-12 lg:w-60 lg:h-16 ">
               <use href="/spriteSL.svg#icon-Logo-smartyloft-white" />
             </svg>
-            <p className="text-xl sm:text-2xl lg:text-4xl font-sans italic text-white whitespace-nowrap ">
+            <p className="text-xl sm:text-2xl lg:text-4xl font-medium italic text-white whitespace-nowrap ">
               {dict.HomePageSlider.title}
             </p>
 
-            <p className=" text-xl sm:text-2xl lg:text-4xl text-center  font-semibold italic text-green-500 whitespace-nowrap">
+            <p className=" text-xl sm:text-2xl lg:text-4xl text-center  font-medium italic text-green-500 whitespace-nowrap">
               {dict.HomePageSlider.desc}
             </p>
           </div>

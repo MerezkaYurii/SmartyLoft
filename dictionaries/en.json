@@ -73,7 +73,12 @@
   "phComment": "Your wishes..."
   
 },
-
+"CustomIdeaBlock": {
+  "title": "Bringing your ideas to life together:",
+  "text": "Found a perfect furniture design on Pinterest, an interesting fitting on Instagram, or sketched your own custom iron handle? Bring your ideas to life! Send this information to us: together we will develop a project, create a 3D visualization, and craft bespoke loft-style furniture or metal fittings according to your unique references",
+  "buttonText": "Send a Request",
+  "contacts": "Our contacts"
+},
 
   "footer": {
     "text": "made with"

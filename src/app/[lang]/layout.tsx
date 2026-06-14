@@ -9,11 +9,19 @@ import DictionaryInitializer from '@/src/redax/DictionaryInitializer';
 import Image from 'next/image';
 import { SessionProvider } from 'next-auth/react';
 import { Toaster } from 'react-hot-toast';
+import { Roboto } from 'next/font/google';
 
 export const metadata: Metadata = {
   title: 'Smartyloft',
   description: 'A Smartyloft page',
 };
+
+// 2. Настраиваем шрифт Roboto
+const roboto = Roboto({
+  subsets: ['latin', 'cyrillic'], // Включаем поддержку украинского языка
+  weight: ['300', '400', '500', '700', '900'], // Веса: от легкого до супер-жирного
+  variable: '--font-roboto', // Создаем CSS-переменную для Tailwind v4
+});
 
 export async function generateStaticParams() {
   return i18n.locales.map((locale) => ({ lang: locale }));
@@ -31,7 +39,9 @@ export default async function RootLayout({
 
   return (
     <html lang={lang}>
-      <body className="min-h-screen flex flex-col">
+      <body
+        className={`${roboto.variable} ${roboto.className} min-h-screen flex flex-col antialiased`}
+      >
         <StoreProvider>
           {/* 2. Обернули всё приложение в SessionProvider */}
           <SessionProvider>

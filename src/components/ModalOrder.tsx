@@ -92,7 +92,7 @@ export default function ModalOrder({ buttonLabel }: ModalOrderProps) {
     <>
       <button
         onClick={openModal}
-        className="px-20 py-2 bg-[#0f3995] border-[#0f3995] hover:bg-[#0f3995]/80 text-white rounded-xl shadow-lg hover:opacity-80 transition duration-500"
+        className="px-20 py-2 bg-[#0f3995] border-[#0f3995] hover:bg-[#0f3995]/80 text-white rounded-xl shadow-lg hover:opacity-80 transition duration-500 cursor-pointer"
       >
         {buttonLabel || dict.ModalOrder.cta}
       </button>

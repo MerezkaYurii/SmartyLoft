@@ -18,6 +18,12 @@ interface IRawOrder {
   };
   locale: string;
   status: string;
+  size: string;
+  rates?: {
+    usd: number;
+    uah: number;
+    pln: number;
+  };
   createdAt: Date;
   updatedAt: Date;
 }
@@ -56,7 +62,7 @@ export async function GET() {
             const objId = new mongoose.Types.ObjectId(stringId);
 
             productData = await Product.findById(objId)
-              .select('title images price sizes description')
+              .select('title images price size description')
               .lean();
 
             // ЛОГ ДЛЯ ПРОВЕРКИ В ТЕРМИНАЛЕ
@@ -88,6 +94,7 @@ export async function GET() {
     );
   }
 }
+
 export async function PUT(req: Request) {
   try {
     const session = await auth();
@@ -100,11 +107,29 @@ export async function PUT(req: Request) {
     }
 
     const body = await req.json();
-    const { orderId, status } = body;
+    const { orderId, status, rates } = body;
 
-    if (!orderId || !status) {
+    // Обязателен только orderId. Status или rates могут приходить по отдельности.
+    if (!orderId) {
       return NextResponse.json(
-        { error: 'Missing orderId or status / Відсутні необхідні поля' },
+        { error: 'Missing orderId / Відсутній orderId' },
+        { status: 400 },
+      );
+    }
+
+    // Собираем объект для обновления динамически
+    const updateFields: {
+      status?: string;
+      rates?: { usd: number; uah: number; pln: number };
+    } = {};
+
+    if (status !== undefined) updateFields.status = status;
+    if (rates !== undefined) updateFields.rates = rates;
+
+    // Если не передали ни статус, ни курсы, отдаем ошибку
+    if (Object.keys(updateFields).length === 0) {
+      return NextResponse.json(
+        { error: 'Missing fields to update / Відсутні поля для оновлення' },
         { status: 400 },
       );
     }
@@ -113,7 +138,7 @@ export async function PUT(req: Request) {
 
     const updatedOrder = await QuickOrder.findByIdAndUpdate(
       orderId,
-      { status: status },
+      updateFields, // Передаем собранные поля
       { new: true },
     );
 
@@ -137,7 +162,6 @@ export async function PUT(req: Request) {
     );
   }
 }
-
 export async function DELETE(req: Request) {
   try {
     const session = await auth();

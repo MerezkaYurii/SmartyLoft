@@ -5,7 +5,6 @@ export interface IConstructorConfig {
   height: number;
   color: string;
   sectionsCount?: number;
-  // Сюда можно будет дописывать любые другие параметры мебели по мере развития конструктора
   [key: string]: string | number | boolean | undefined;
 }
 
@@ -15,9 +14,14 @@ export interface IQuickOrder extends Document {
   phone: string;
   email?: string;
   comment?: string;
-  config: IConstructorConfig; // Тут будут храниться размеры, секции, цвет и т.д.
+  config: IConstructorConfig;
   status: 'pending' | 'completed' | 'canceled';
-  locale: string; // Запоминаем язык, с которого пришел заказ
+  locale: string;
+  rates?: {
+    usd: number;
+    uah: number;
+    pln: number;
+  };
   createdAt: Date;
 }
 
@@ -25,7 +29,7 @@ const QuickOrderSchema: Schema<IQuickOrder> = new Schema(
   {
     userId: {
       type: Schema.Types.ObjectId,
-      ref: 'User', // Ссылка на модель пользователей NextAuth
+      ref: 'User',
       required: true,
     },
     name: {
@@ -50,7 +54,7 @@ const QuickOrderSchema: Schema<IQuickOrder> = new Schema(
     config: {
       type: Schema.Types.Mixed,
       required: true,
-    }, // Гибкое поле для любых параметров конструктора
+    },
     status: {
       type: String,
       enum: ['pending', 'completed', 'canceled'],
@@ -60,13 +64,24 @@ const QuickOrderSchema: Schema<IQuickOrder> = new Schema(
       type: String,
       default: 'en',
     },
+    // Явно описываем вложенные поля вместо type: Object
+    rates: {
+      usd: { type: Number },
+      uah: { type: Number },
+      pln: { type: Number },
+    },
   },
   { timestamps: true, versionKey: false },
 );
 
-// Защита от избыточного создания моделей при Hot Reload в Next.js
-const QuickOrder: Model<IQuickOrder> =
-  mongoose.models.QuickOrder ||
-  mongoose.model<IQuickOrder>('QuickOrder', QuickOrderSchema);
+// Сбрасываем старую закэшированную модель в dev-режиме, чтобы применились новые поля схемы
+if (mongoose.models.QuickOrder) {
+  delete mongoose.models.QuickOrder;
+}
+
+const QuickOrder: Model<IQuickOrder> = mongoose.model<IQuickOrder>(
+  'QuickOrder',
+  QuickOrderSchema,
+);
 
 export default QuickOrder;

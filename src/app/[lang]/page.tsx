@@ -1,7 +1,7 @@
 import CatalogSections from '@/src/components/CatalogSections';
+import CustomIdeaBlock from '@/src/components/CustomIdeaBlock';
 import HomePageSlider from '@/src/components/HomePageSlider';
 import ProductGrid from '@/src/components/ProductGrid';
-import TestComponent from '@/src/components/TestComponent';
 import { getDictionary } from '@/src/lib/get-dictionary';
 
 export default async function Home({
@@ -22,7 +22,7 @@ export default async function Home({
           loadingText={dict.CatalogSections.loading || 'Завантаження...'}
           errorText={dict.CatalogSections.error || 'Помилка'}
         />
-        <TestComponent />
+        <CustomIdeaBlock lang={lang} />
       </div>
     </main>
   );

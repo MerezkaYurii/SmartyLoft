@@ -70,6 +70,12 @@
   "comment": "Komentaras",
   "phComment": "Jūsų pageidavimai..."
 },
+"CustomIdeaBlock": {
+  "title": "Įgyvendiname jūsų idėjas kartu:",
+  "text": "Radote tobulą baldų dizainą „Pinterest“, įdomią furnitūrą „Instagram“ ar nupiešėte savo rankomis sukurtos unikalios metalinės rankenos eskizą? Įgyvendinkite savo idėjas! Atsiųskite mums šią informaciją: kartu parengsime projektą, sukursime 3D vizualizaciją ir pagaminsime lofto stiliaus baldus ar metalinius elementus pagal jūsų unikalius atvaizdus.",
+  "buttonText": "Siųsti užklausą",
+  "contacts": "Mūsų kontaktai"
+},
     "footer": {
         "text": "pagaminta su"
     }

@@ -6,10 +6,9 @@ import Product from '@/src/DataBase/models/Product';
 import CurrencyRate from '@/src/DataBase/models/CurrencyRate'; // ИМПОРТИРОВАЛИ МОДЕЛЬ КУРСОВ
 import mongoose from 'mongoose';
 import Stripe from 'stripe';
+import { getEnvVar } from '@/src/utils/getEnvVar';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2026-05-27.dahlia',
-});
+const stripe = new Stripe(getEnvVar('STRIPE_SECRET_KEY') as string);
 
 export async function POST(req: Request) {
   try {
@@ -106,23 +105,28 @@ export async function POST(req: Request) {
       name: name.trim(),
       phone: phone.trim(),
       email: session.user.email,
-      comment: comment.trim(),
+      comment: comment ? comment.trim() : '',
       config: configData,
       locale: currentLocale,
       status: 'pending',
     });
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    const siteUrl = getEnvVar('NEXT_PUBLIC_SITE_URL') || 'http://localhost:3000';
 
     // Переводим локаль для Stripe (для украинского нужна 'uk')
-    const stripeLocale = currentLocale === 'ua' ? 'uk' : currentLocale;
+    const stripeLocale = currentLocale === 'ua' ? 'auto' : currentLocale;
 
-    // 3. СОЗДАНИЕ СЕССИИ STRIPE С ГАРАНТИРОВАННОЙ ЛОКАЛЬЮ
+    // 3. СОЗДАНИЕ СЕССИИ STRIPE С ГАРАНТИРОВАННОЙ ЛОКАЛЬЮ И METADATA
     const stripeSession = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'payment',
       customer_email: session.user.email,
       client_reference_id: newOrder._id.toString(),
+
+      // КРИТИЧЕСКИ ВАЖНО ДЛЯ ВЕБХУКА: передаем ID заказа в metadata
+      metadata: {
+        orderId: newOrder._id.toString(),
+      },
 
       // Локаль управляет языком интерфейса Stripe и отображением символов валют ($ / грн / zł)
       locale: stripeLocale as Stripe.Checkout.SessionCreateParams.Locale,

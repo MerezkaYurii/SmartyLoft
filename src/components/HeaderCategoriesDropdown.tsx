@@ -63,7 +63,7 @@ export default function HeaderCategoriesDropdown({
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 font-bold text-black dark:text-white hover:text-[#0f3995] dark:hover:text-[#3b82f6] transition-colors duration-300"
+        className="flex items-center gap-1 font-medium text-black dark:text-white hover:text-[#0f3995] dark:hover:text-[#3b82f6] transition-colors duration-300"
       >
         {buttonText}
         <svg

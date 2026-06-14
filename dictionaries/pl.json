@@ -71,6 +71,12 @@
   "comment": "Komentarz",
   "phComment": "Twoje życzenia..."
 },
+"CustomIdeaBlock": {
+  "title": "Wspólnie realizujemy Twoje pomysły:",
+  "text": "Znalazłeś idealny projekt mebli na Pinterest, ciekawe okucia na Instagramie lub narysowałeś własny szkic unikalnej metalowej klamki? Urealnij swoje pomysły! Prześlij nam tę informację: wspólnie opracujemy projekt, stworzymy wizualizację 3D i wykonamy meble w stylu loft lub metalowe elementy według Twoich indywidualnych referencji.",
+  "buttonText": "Wyślij zapytanie",
+  "contacts": "Nasze kontakty"
+},
     "footer": {
         "text": "zrobione z"
     }

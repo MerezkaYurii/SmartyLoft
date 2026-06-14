@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useDictionary } from '../hooks/useDictionary';
-import { toast } from 'react-hot-toast'; // ДОБАВИЛИ ИМПОРТ
+import { toast } from 'react-hot-toast';
 
 interface QuickOrderButtonProps {
   lang: string;
@@ -83,10 +83,6 @@ export default function QuickOrderButton({
       });
 
       const data = await response.json();
-
-      ///////////////////////
-      console.log('--- FRONTEND RESPONSE DATA ---', data);
-      //////////////////////////
 
       if (!response.ok) {
         throw new Error(data.error || 'Something went wrong');

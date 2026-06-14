@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: Arial, Helvetica, sans-serif;
+--font-sans: var(--font-roboto), sans-serif;
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -13,7 +13,10 @@
     margin: 0;
     padding: 0;
   }
-
+/* Жестко прописываем Roboto для всех тегов, чтобы перебить остатки Arial */
+  html, body, p, h1, h2, h3, h4, h5, h6, span, a, button, input, textarea {
+    font-family: var(--font-roboto), sans-serif !important;
+  }
   body {
     font-family: var(--font-sans);
     min-height: 100vh;
