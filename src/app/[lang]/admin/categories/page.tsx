@@ -70,7 +70,7 @@ export default function AdminCategoriesPage() {
   return (
     <div className="p-6 max-w-6xl mx-auto dark:text-white">
       <div className="flex justify-between items-center mb-6">
-        <h1 className=" pl-4  text-2xl font-light ">
+        <h1 className=" pl-4  text-2xl font-medium ">
           Manage categories / Управління категоріями
         </h1>
         <Link

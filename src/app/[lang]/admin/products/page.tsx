@@ -87,7 +87,7 @@ export default function AdminProductsPage() {
         ← Back to Site / Повернутися на сайт
       </Link>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl  font-light text-gray-950 dark:text-white">
+        <h1 className="text-3xl  font-medium text-gray-950 dark:text-white">
           Product management <br /> Управління товарами
         </h1>
         <div className="flex flex-col gap-3">

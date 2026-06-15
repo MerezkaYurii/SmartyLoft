@@ -60,10 +60,10 @@ export default function HeaderCategoriesDropdown({
   }, []);
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative shrink-0" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 font-medium text-black dark:text-white hover:text-[#0f3995] dark:hover:text-[#3b82f6] transition-colors duration-300"
+        className="flex items-center gap-1 font-medium text-black dark:text-white hover:text-[#0f3995] dark:hover:text-[#3b82f6] transition-colors duration-300 whitespace-nowrap shrink-0"
       >
         {buttonText}
         <svg
@@ -82,7 +82,8 @@ export default function HeaderCategoriesDropdown({
       </button>
 
       {isOpen && (
-        <div className="absolute left-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden py-1 z-50">
+        <div className="absolute left-0 lg:left-0 right-0 lg:right-auto mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden py-1 z-50">
+          {' '}
           {categories.length === 0 ? (
             <div className="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">
               Загрузка...

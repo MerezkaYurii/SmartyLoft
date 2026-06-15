@@ -165,7 +165,7 @@ Saving error: / Помилка збереження ${errData.error}`);
 
   return (
     <div className="container mx-auto p-6 max-w-2xl">
-      <h1 className="text-2xl font-normal mb-6 text-gray-950 dark:text-white ">
+      <h1 className="text-2xl font-medium mb-6 text-gray-950 dark:text-white ">
         Adding a new product / Додавання нового товару
       </h1>
       <Link
