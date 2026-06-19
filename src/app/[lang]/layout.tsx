@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { i18n, Locale } from '../../i18n-config';
+import { i18n } from '../../i18n-config';
 import '../globals.css';
 import Header from '../../components/Header';
 import { getDictionary } from '../../lib/get-dictionary';
@@ -28,18 +28,27 @@ export async function generateStaticParams() {
   return i18n.locales.map((locale) => ({ lang: locale }));
 }
 
+interface RootLayoutProps {
+  children: React.ReactNode;
+  params: Promise<{
+    lang: string; // Next.js требует string для динамических сегментов
+  }>;
+}
+
 export default async function RootLayout({
   children,
   params,
-}: Readonly<{
-  children: React.ReactNode;
-  params: Promise<{ lang: Locale }>;
-}>) {
-  const { lang } = await params;
-  const dict = await getDictionary(lang);
+}: RootLayoutProps) {
+  const resolvedParams = await params;
+  const lang = resolvedParams?.lang;
+  const allowedLocales = ['en', 'lt', 'ua', 'pl'];
+  const currentLocale = allowedLocales.includes(lang)
+    ? (lang as 'en' | 'lt' | 'ua' | 'pl')
+    : 'en';
+  const dict = await getDictionary(currentLocale);
 
   return (
-    <html lang={lang}>
+    <html lang={currentLocale}>
       <body
         className={`${roboto.variable} ${roboto.className} min-h-screen flex flex-col antialiased`}
       >

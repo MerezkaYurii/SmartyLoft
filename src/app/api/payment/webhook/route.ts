@@ -4,14 +4,14 @@ import QuickOrder from '@/src/DataBase/models/QuickOrder';
 import Stripe from 'stripe';
 import { getEnvVar } from '@/src/utils/getEnvVar';
 
-// Инициализируем Stripe с секретным ключом из .env
-const stripe = new Stripe(getEnvVar('STRIPE_SECRET_KEY') as string);
-
-// Секрет вебхука для проверки подписи
-const webhookSecret = getEnvVar('STRIPE_WEBHOOK_SECRET') as string;
-
 export async function POST(req: Request) {
   try {
+    // Инициализируем Stripe с секретным ключом из .env
+    const stripeSecretKey = getEnvVar('STRIPE_SECRET_KEY') as string;
+
+    // Секрет вебхука для проверки подписи
+    const webhookSecret = getEnvVar('STRIPE_WEBHOOK_SECRET') as string;
+    const stripe = new Stripe(stripeSecretKey);
     const body = await req.text(); // Для Stripe нужна сырая строка (raw text)
     const signature = req.headers.get('stripe-signature');
 
