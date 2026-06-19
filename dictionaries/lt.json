@@ -76,6 +76,13 @@
   "buttonText": "Siųsti užklausą",
   "contacts": "Mūsų kontaktai"
 },
+"AiChat": {
+  "greetings": "Sveiki",
+  "question":"Kuo galime padėti SmartyLoft?",
+  "placeholder": "Įveskite savo žinutę...",
+  "authGreeting": " Laba diena! Sveiki atvykę į SmartyLoft. Kuo galiu jums padėti šiandien?"
+  
+ },
     "footer": {
         "text": "pagaminta su"
     }

@@ -77,6 +77,13 @@
   "buttonText": "Wyślij zapytanie",
   "contacts": "Nasze kontakty"
 },
+"AiChat": {
+  "greetings": "Witamy",
+  "question":"Czym interesujesz się dzisiaj w SmartyLoft?",
+  "placeholder": "Wpisz swoją wiadomość...",
+  "authGreeting": " Dzień dobry! Witamy w SmartyLoft. W czym mogę pomóc dzisiaj?"
+  
+ },
     "footer": {
         "text": "zrobione z"
     }

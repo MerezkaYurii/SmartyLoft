@@ -10,6 +10,7 @@ import Image from 'next/image';
 import { SessionProvider } from 'next-auth/react';
 import { Toaster } from 'react-hot-toast';
 import { Roboto } from 'next/font/google';
+import AiChat from '@/src/components/AiChat';
 
 export const metadata: Metadata = {
   title: 'Smartyloft',
@@ -76,6 +77,8 @@ export default async function RootLayout({
               <Header />
               <main className="grow pt-[70px]">
                 {children}
+
+                <AiChat />
                 <Toaster position="top-center" reverseOrder={false} />
               </main>
 

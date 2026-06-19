@@ -76,6 +76,13 @@
   "buttonText": "Надіслати запит",
   "contacts": "Наші контакти"
 },
+"AiChat": {
+  "greetings": "Вітаємо",
+  "question":"Чим цікавишся сьогодні в SmartyLoft?",
+  "placeholder": "Введіть своє повідомлення...",
+  "authGreeting": " Доброго дня! Вітаємо вас в SmartyLoft. Чим я можу допомогти вам сьогодні?"
+  
+ },
     "footer": {
         "text": "Зроблено з"
     }

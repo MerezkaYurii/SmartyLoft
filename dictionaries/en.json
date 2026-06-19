@@ -79,6 +79,13 @@
   "buttonText": "Send a Request",
   "contacts": "Our contacts"
 },
+"AiChat": {
+  "greetings": "Welcome",
+  "question":"What are you interested in today in SmartyLoft?",
+  "placeholder": "Type your message...",
+  "authGreeting": " Good afternoon! Welcome to SmartyLoft. How can I help you today?"
+  
+ },
 
   "footer": {
     "text": "made with"
