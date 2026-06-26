@@ -14,7 +14,29 @@ import AiChat from '@/src/components/AiChat';
 
 export const metadata: Metadata = {
   title: 'Smartyloft',
-  description: 'A Smartyloft page',
+  icons: {
+    icon: '/LogoSmartyloft.svg',
+  },
+  openGraph: {
+    title: 'Smartyloft',
+    url: 'https://smarty-loft.vercel.app',
+    siteName: 'Smartyloft',
+    images: [
+      {
+        url: '/LogoSmartyloftBgWhite.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Smartyloft preview',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Smartyloft',
+    images: ['/LogoSmartyloftBgWhite.jpg'],
+  },
 };
 
 // 2. Настраиваем шрифт Roboto

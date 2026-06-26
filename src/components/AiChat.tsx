@@ -4,10 +4,18 @@ import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useDictionary } from '../hooks/useDictionary';
 
+interface ChatMessage {
+  id: string;
+  sender: 'user' | 'ai';
+  text: string;
+}
+
 export default function AiChat() {
   const { data: session, status } = useSession();
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const dict = useDictionary();
 
   // Проверяем, авторизован ли пользователь
@@ -16,15 +24,72 @@ export default function AiChat() {
   const userName =
     session?.user?.name?.split(' ')[0] || session?.user?.email?.split('@')[0];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!message.trim()) return;
+    if (!message.trim() || isLoading) return;
 
-    // TODO: Здесь будет отправка сообщения на бэкенд к ИИ
-    console.log('Отправлено:', message);
+    const userText = message.trim();
     setMessage('');
+
+    // 1. Добавляем сообщение пользователя на экран
+    const userMessage: ChatMessage = {
+      id: crypto.randomUUID(),
+      sender: 'user',
+      text: userText,
+    };
+    setMessages((prev) => [...prev, userMessage]);
+    setIsLoading(true);
+
+    // Создаем контроллер для прерывания запроса по таймауту (15 секунд)
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+    try {
+      // 2. Отправляем запрос на твой новый вебхук в n8n
+      const response = await fetch(
+        ' https://n8n-production-9f7d.up.railway.app/webhook-test/SmyrtLoftAI',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify({
+            text: userText,
+            user: userName || 'Guest',
+            isAuth,
+          }),
+        },
+      );
+      clearTimeout(timeoutId);
+      if (!response.ok) {
+        throw new Error('Network error');
+      }
+
+      const data = await response.json();
+
+      // 3. Добавляем ответ от ИИ на экран
+      const aiMessage: ChatMessage = {
+        id: crypto.randomUUID(),
+        sender: 'ai',
+        text: data.reply || 'Я получил твое сообщение!',
+      };
+      setMessages((prev) => [...prev, aiMessage]);
+    } catch (error) {
+      console.error('Ошибка чата:', error);
+      const errorMessage: ChatMessage = {
+        id: crypto.randomUUID(),
+        sender: 'ai',
+        text: 'Ошибка связи с сервером. Попробуй еще раз.',
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
   };
+
   if (!dict) return null;
+
   return (
     <div className="fixed bottom-6 right-6 z-50 font-sans">
       {/* КНОПКА-ИКОНКА ЧАТА (Круглый смайлик/робот) */}
@@ -100,7 +165,33 @@ export default function AiChat() {
               )}
             </div>
 
-            {/* ТУТ БУДУТ ВЫВОДИТЬСЯ ПОСЛЕДУЮЩИЕ СООБЩЕНИЯ */}
+            {/* Вывод динамических сообщений */}
+            {messages.map((msg) => (
+              <div
+                key={msg.id}
+                className={`p-3.5 rounded-2xl text-sm max-w-[85%] shadow-sm border ${
+                  msg.sender === 'user'
+                    ? 'bg-[#0f3995] text-white self-end rounded-tr-none border-blue-800'
+                    : 'bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 self-start rounded-tl-none border-gray-100 dark:border-gray-700/60'
+                }`}
+              >
+                {msg.text}
+              </div>
+            ))}
+
+            {/* Вывод динамических сообщений */}
+            {messages.map((msg) => (
+              <div
+                key={msg.id}
+                className={`p-3.5 rounded-2xl text-sm max-w-[85%] shadow-sm border ${
+                  msg.sender === 'user'
+                    ? 'bg-[#0f3995] text-white self-end rounded-tr-none border-blue-800'
+                    : 'bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 self-start rounded-tl-none border-gray-100 dark:border-gray-700/60'
+                }`}
+              >
+                {msg.text}
+              </div>
+            ))}
           </div>
 
           {/* Форма ввода (Окно ввода) */}

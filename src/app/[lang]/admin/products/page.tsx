@@ -115,6 +115,12 @@ export default function AdminProductsPage() {
           >
             Orders / Замовлення
           </Link>
+          <Link
+            href="/admin/dialogs"
+            className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white font-medium rounded-lg text-sm  text-center transition-colors "
+          >
+            Dialogs / Діалоги
+          </Link>
         </div>
       </div>
 
