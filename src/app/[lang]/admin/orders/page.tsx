@@ -96,7 +96,7 @@ export default function AdminOrdersPage() {
         </h1>
 
         {orders.length === 0 ? (
-          <p className="text-gray-200 italic">
+          <p className="text-white italic">
             No orders found / Замовлень не знайдено
           </p>
         ) : (
@@ -133,7 +133,7 @@ export default function AdminOrdersPage() {
                         {productTitle ? (
                           <div className="flex items-center gap-3">
                             {productImage && (
-                              <div className="relative w-10 h-10 rounded overflow-hidden flex-shrink-0 border border-gray-600">
+                              <div className="relative w-10 h-10 rounded overflow-hidden flex-shrink- border border-gray-600">
                                 <Image
                                   src={productImage}
                                   alt={productTitle}

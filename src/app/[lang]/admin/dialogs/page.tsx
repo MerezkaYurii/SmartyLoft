@@ -30,8 +30,7 @@ interface IDialog {
 export default function DialogsPage() {
   const params = useParams();
   const router = useRouter();
-  const currentLocale = (params?.locale as string) || 'en';
-
+  const lang = (params?.lang as string) || 'ua';
   const [dialogs, setDialogs] = useState<IDialog[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -150,9 +149,7 @@ export default function DialogsPage() {
                       <td className="p-4 text-right space-x-2 whitespace-nowrap">
                         <button
                           onClick={() =>
-                            router.push(
-                              `/${currentLocale}/admin/dialogs/${dialog._id}`,
-                            )
+                            router.push(`/${lang}/admin/dialogs/${dialog._id}`)
                           }
                           className="px-3 py-1.5 text-xs font-medium  tracking-wider bg-[#3A3B3B] text-white rounded-lg hover:bg-[#4A4B4B] transition-colors border border-gray-600"
                         >
