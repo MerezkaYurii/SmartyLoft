@@ -4,9 +4,11 @@ import Nodemailer from 'next-auth/providers/nodemailer';
 import { MongoDBAdapter } from '@auth/mongodb-adapter';
 import clientPromise from './lib/dbClient'; // Путь к нашему мосту базы данных
 import nodemailer from 'nodemailer';
+import { MongoClient } from 'mongodb';
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   // Подключаем адаптер для MongoDB
-  adapter: MongoDBAdapter(clientPromise),
+  adapter: MongoDBAdapter(clientPromise as unknown as Promise<MongoClient>),
 
   // Настраиваем способы входа
   providers: [

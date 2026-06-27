@@ -13,6 +13,7 @@ import { Roboto } from 'next/font/google';
 import AiChat from '@/src/components/AiChat';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://smarty-loft.vercel.app'),
   title: 'Smartyloft',
   icons: {
     icon: '/LogoSmartyloft.svg',
