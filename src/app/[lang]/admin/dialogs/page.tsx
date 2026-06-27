@@ -149,13 +149,11 @@ export default function DialogsPage() {
                       <td className="p-4 text-right space-x-2 whitespace-nowrap">
                         <button
                           onClick={() =>
-                            router.push(
-                              `/${lang}/admin/dialogs/edit/${dialog._id}`,
-                            )
+                            router.push(`/${lang}/admin/dialogs/${dialog._id}`)
                           }
                           className="px-3 py-1.5 text-xs font-medium  tracking-wider bg-[#3A3B3B] text-white rounded-lg hover:bg-[#4A4B4B] transition-colors border border-gray-600"
                         >
-                          Reading the dialogue / Читати діалог
+                          Reading / Читати
                         </button>
                         <button
                           onClick={() => handleDelete(dialog._id)}

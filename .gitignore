@@ -45,3 +45,5 @@ next-env.d.ts
 .vscode
 .env
 .env.local
+
+smartyloft-info.txt
