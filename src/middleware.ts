@@ -5,40 +5,45 @@ import { i18n } from './i18n-config';
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // 1. ЗАЩИТА АДМИНКИ
-  // Если пользователь пытается зайти в админку
-  if (pathname.startsWith('/admin')) {
-    // Но это НЕ страница логина и НЕ запрос к API авторизации
-    if (pathname !== '/admin/login' && pathname !== '/api/admin/auth') {
-      const session = request.cookies.get('admin_session')?.value;
-
-      // Если куки нет — редиректим на страницу входа
-      if (!session) {
-        const loginUrl = new URL('/admin/login', request.url);
-        return NextResponse.redirect(loginUrl);
-      }
-    }
-  }
-
-  // Проверяем, отсутствует ли локаль в пути
+  // 1. Проверяем локаль (если нет — добавляем defaultLocale)
   const pathnameIsMissingLocale = i18n.locales.every(
     (locale) =>
       !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`,
   );
 
+  let currentPath = pathname;
   if (pathnameIsMissingLocale) {
-    const locale = i18n.defaultLocale;
-
-    // Используем rewrite вместо redirect, чтобы Next.js плавно подменил роут на сервере
-    return NextResponse.rewrite(new URL(`/${locale}${pathname}`, request.url));
+    currentPath = `/${i18n.defaultLocale}${pathname}`;
   }
+
+  // 2. ЗАЩИТА АДМИНКИ (проверяем уже с учетом локали)
+  // Теперь путь всегда начинается с /ua/admin, /en/admin и т.д.
+  if (currentPath.includes('/admin')) {
+    // Исключаем страницу логина и API
+    if (
+      !currentPath.includes('/admin/login') &&
+      !currentPath.includes('/api/admin/auth')
+    ) {
+      const session = request.cookies.get('admin_session')?.value;
+      if (!session) {
+        return NextResponse.redirect(
+          new URL(`/${i18n.defaultLocale}/admin/login`, request.url),
+        );
+      }
+    }
+  }
+
+  // Если был rewrite — выполняем его
+  if (pathnameIsMissingLocale) {
+    return NextResponse.rewrite(new URL(currentPath, request.url));
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {
-  // Игнорируем api, _next статику, favicon и любые файлы популярных форматов картинок
+  // Исключаем статику, API и изображения
   matcher: [
-    '/',
-    '/admin/:path*',
     '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };
