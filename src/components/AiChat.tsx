@@ -70,7 +70,7 @@ export default function AiChat() {
 
       // 3. Проверяем, есть ли вообще тело ответа, чтобы избежать Unexpected end of JSON
       const textResponse = await response.text();
-      console.log('Raw response:', textResponse);
+      console.log('Raw response:', textResponse); // оставь для отладки
 
       let replyText = 'I got your message! / Я отримав твоє повідомлення!';
 
@@ -78,39 +78,44 @@ export default function AiChat() {
         try {
           let data = JSON.parse(textResponse);
 
-          // Если пришёл массив — берём первый элемент
+          // 1. Если массив — берём первый элемент
           if (Array.isArray(data) && data.length > 0) {
             data = data[0];
           }
 
-          // Основная логика
-          if (data?.reply) {
-            let innerText = data.reply;
+          // 2. Ищем текст ответа в разных возможных местах
+          let foundText = null;
 
-            // Если внутри снова JSON-строка
-            if (typeof innerText === 'string') {
-              // Убираем одинарные кавычки и пробуем распарсить
-              innerText = innerText.replace(/'/g, '"'); // заменяем ' на "
+          if (data?.reply) foundText = data.reply;
+          else if (data?.output) foundText = data.output;
+          else if (data?.text) foundText = data.text;
+          else if (typeof data === 'string') foundText = data;
 
-              try {
-                const inner = JSON.parse(innerText);
-                replyText = inner.reply || inner.text || inner;
-              } catch {
-                // Если не распарсилось — берём как есть
-                replyText = innerText;
-              }
-            } else {
-              replyText = innerText;
+          // 3. Если нашли строку — пытаемся вытащить из неё внутренний JSON
+          if (typeof foundText === 'string') {
+            let cleanText = foundText.trim();
+
+            // Заменяем одинарные кавычки на двойные (часто приходит из n8n)
+            cleanText = cleanText.replace(/'/g, '"');
+
+            // Пробуем распарсить как JSON
+            try {
+              const inner = JSON.parse(cleanText);
+              if (inner?.reply) replyText = inner.reply;
+              else if (inner?.text) replyText = inner.text;
+              else replyText = cleanText;
+            } catch {
+              // Не JSON — используем как есть
+              replyText = cleanText;
             }
-          } else if (data?.output) {
-            // На случай старого формата
+          } else if (typeof foundText === 'object' && foundText !== null) {
+            // Если reply пришёл как объект
             replyText =
-              typeof data.output === 'string'
-                ? data.output.replace(/'/g, '"')
-                : data.output;
+              foundText.reply || foundText.text || JSON.stringify(foundText);
           }
         } catch (e) {
           console.error('JSON parse error:', e);
+          // Если не получилось распарсить — возвращаем сырой текст
           replyText = textResponse.trim();
         }
       }
@@ -119,8 +124,8 @@ export default function AiChat() {
         id: crypto.randomUUID(),
         sender: 'ai',
         text: replyText,
-        // data.reply || 'I got your message! / Я отримав твоє повідомлення!',
       };
+
       setMessages((prev) => [...prev, aiMessage]);
     } catch (error) {
       console.error('Ошибка чата:', error);
