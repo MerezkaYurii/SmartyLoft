@@ -71,19 +71,39 @@ export default function AiChat() {
       // 3. Проверяем, есть ли вообще тело ответа, чтобы избежать Unexpected end of JSON
       const textResponse = await response.text();
 
+      console.log('Raw response:', textResponse); // для отладки
+
       let replyText = 'I got your message! / Я отримав твоє повідомлення!';
 
       if (textResponse.trim()) {
         try {
-          const data = JSON.parse(textResponse);
-          if (data && data.reply) {
+          let data = JSON.parse(textResponse);
+
+          // === Основная обработка для твоего n8n ===
+          if (Array.isArray(data) && data.length > 0) {
+            data = data[0]; // берём первый элемент массива
+          }
+
+          if (data?.output) {
+            // output — это строка с JSON
+            if (typeof data.output === 'string') {
+              try {
+                const inner = JSON.parse(data.output);
+                replyText = inner.reply || inner.text || data.output;
+              } catch {
+                replyText = data.output; // если не JSON — берём как есть
+              }
+            } else {
+              replyText = data.output;
+            }
+          } else if (data?.reply) {
             replyText = data.reply;
+          } else if (typeof data === 'string') {
+            replyText = data;
           }
         } catch (e) {
-          console.error(
-            'Не удалось распарсить JSON, текст ответа:',
-            textResponse,
-          );
+          console.error('JSON parse error:', e);
+          replyText = textResponse.trim();
         }
       }
 
