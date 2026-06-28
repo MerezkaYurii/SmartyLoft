@@ -5,20 +5,20 @@ import { i18n } from './i18n-config';
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // 1. Проверяем, есть ли уже локаль в пути
+  // Проверяем, есть ли уже локаль в пути
   const pathnameHasLocale = i18n.locales.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`,
   );
 
-  // 2. Если локали нет, ПЕРЕНАПРАВЛЯЕМ на версию с локалью (например, /ua/...)
+  // Если хочешь полностью отключить автоматический редирект — оставь только это:
+  // (ничего не делаем, просто пропускаем запрос)
   if (
     !pathnameHasLocale &&
     !pathname.startsWith('/api') &&
     !pathname.startsWith('/_next')
   ) {
-    return NextResponse.redirect(
-      new URL(`/${i18n.defaultLocale}${pathname}`, request.url),
-    );
+    // return NextResponse.redirect(...)  ← закомментировали или удалили
+    console.log(`No locale redirect for: ${pathname}`); // для отладки
   }
 
   return NextResponse.next();

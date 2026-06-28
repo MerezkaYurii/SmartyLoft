@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useDictionary } from '../hooks/useDictionary';
 
@@ -17,7 +17,10 @@ export default function AiChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const dict = useDictionary();
-
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
   const isProduction =
     typeof window !== 'undefined' &&
     window.location.origin === 'https://smarty-loft.vercel.app';
@@ -32,7 +35,8 @@ export default function AiChat() {
 
     const userText = message.trim();
     setMessage('');
-
+    setMessages((prev) => [...prev, userMessage]);
+    scrollToBottom();
     const userMessage: ChatMessage = {
       id: crypto.randomUUID(),
       sender: 'user',
@@ -70,7 +74,8 @@ export default function AiChat() {
 
       // 3. Проверяем, есть ли вообще тело ответа, чтобы избежать Unexpected end of JSON
       const textResponse = await response.text();
-      console.log('Raw response:', textResponse); // оставь для отладки
+
+      // console.log('Raw response:', textResponse); // оставь для отладки
 
       let replyText = 'I got your message! / Я отримав твоє повідомлення!';
 
@@ -127,6 +132,7 @@ export default function AiChat() {
       };
 
       setMessages((prev) => [...prev, aiMessage]);
+      scrollToBottom();
     } catch (error) {
       console.error('Ошибка чата:', error);
       const errorMessage: ChatMessage = {
@@ -228,6 +234,8 @@ export default function AiChat() {
                 {msg.text}
               </div>
             ))}
+
+            <div ref={messagesEndRef} />
           </div>
 
           {/* Форма ввода */}
