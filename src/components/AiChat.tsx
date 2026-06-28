@@ -18,9 +18,11 @@ export default function AiChat() {
   const [isLoading, setIsLoading] = useState(false);
   const dict = useDictionary();
 
-  // Проверяем, авторизован ли пользователь
+  const isProduction =
+    typeof window !== 'undefined' &&
+    window.location.origin === 'https://smarty-loft.vercel.app';
+
   const isAuth = status === 'authenticated';
-  // Берем имя (вырезаем первое слово, чтобы было просто "Юрий") или email, если имени нет
   const userName =
     session?.user?.name?.split(' ')[0] || session?.user?.email?.split('@')[0];
 
@@ -31,7 +33,6 @@ export default function AiChat() {
     const userText = message.trim();
     setMessage('');
 
-    // 1. Добавляем сообщение пользователя на экран
     const userMessage: ChatMessage = {
       id: crypto.randomUUID(),
       sender: 'user',
@@ -40,27 +41,26 @@ export default function AiChat() {
     setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
 
-    // Создаем контроллер для прерывания запроса по таймауту (15 секунд)
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
+    const webhookUrl = isProduction
+      ? 'https://n8n-production-9f7d.up.railway.app/webhook/SmyrtLoftAI'
+      : 'https://n8n-production-9f7d.up.railway.app/webhook-test/SmyrtLoftAI';
+
     try {
-      // 2. Отправляем запрос на твой новый вебхук в n8n
-      const response = await fetch(
-        ' https://n8n-production-9f7d.up.railway.app/webhook/SmyrtLoftAI',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-          },
-          body: JSON.stringify({
-            text: userText,
-            user: userName || 'Guest',
-            isAuth,
-          }),
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
         },
-      );
+        body: JSON.stringify({
+          text: userText,
+          user: userName || 'Guest',
+          isAuth,
+        }),
+      });
       clearTimeout(timeoutId);
       if (!response.ok) {
         throw new Error('Network error');
@@ -68,11 +68,11 @@ export default function AiChat() {
 
       const data = await response.json();
 
-      // 3. Добавляем ответ от ИИ на экран
       const aiMessage: ChatMessage = {
         id: crypto.randomUUID(),
         sender: 'ai',
-        text: data.reply || 'Я получил твое сообщение!',
+        text:
+          data.reply || 'I got your message! / Я отримав твоє повідомлення!',
       };
       setMessages((prev) => [...prev, aiMessage]);
     } catch (error) {
@@ -80,7 +80,7 @@ export default function AiChat() {
       const errorMessage: ChatMessage = {
         id: crypto.randomUUID(),
         sender: 'ai',
-        text: 'Ошибка связи с сервером. Попробуй еще раз.',
+        text: 'Error connecting to server. Please try again. / Помилка підключення до сервера. Спробуйте ще раз.',
       };
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
@@ -92,13 +92,12 @@ export default function AiChat() {
 
   return (
     <div className="fixed bottom-6 right-6 z-50 font-sans">
-      {/* КНОПКА-ИКОНКА ЧАТА (Круглый смайлик/робот) */}
+      {/* КНОПКА-ИКОНКА ЧАТА */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
           className="w-14 h-14 bg-[#0f3995] hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 text-white rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 group"
         >
-          {/* Иконка дружелюбного робота/смайлика */}
           <svg
             className="w-7 h-7 animate-pulse group-hover:scale-110 transition-transform"
             fill="none"
@@ -120,14 +119,13 @@ export default function AiChat() {
       {isOpen && (
         <div className="w-[320px] sm:w-[360px] h-[450px] bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 flex flex-col overflow-hidden transition-all duration-300">
           {/* Шапка чата */}
-          <div className="bg-[#0f3995]  text-white px-4 py-3.5 flex items-center justify-between shadow-sm shrink-0">
+          <div className="bg-[#0f3995] text-white px-4 py-3.5 flex items-center justify-between shadow-sm shrink-0">
             <div className="flex items-center gap-2">
               <div className="w-2.5 h-2.5 bg-green-400 rounded-full animate-ping" />
               <span className="font-medium tracking-wide text-sm">
                 SmartyLoft AI
               </span>
             </div>
-            {/* Кнопка закрыть */}
             <button
               onClick={() => setIsOpen(false)}
               className="text-gray-200 hover:text-white transition-colors"
@@ -149,9 +147,9 @@ export default function AiChat() {
           </div>
 
           {/* Тело чата (История сообщений) */}
-          <div className="flex-1 p-4 overflow-y-auto bg-gray-50 dark:bg-gray-900/40 flex flex-col justify-start">
+          <div className="flex-1 p-4 overflow-y-auto bg-gray-50 dark:bg-gray-900/40 flex flex-col gap-3 justify-start">
             {/* Приветственное сообщение от ИИ */}
-            <div className="bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-2xl rounded-tl-none p-3.5 shadow-sm max-w-[85%] border border-gray-100 dark:border-gray-700/60 text-sm">
+            <div className="bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-2xl rounded-tl-none p-3.5 shadow-sm max-w-[85%] border border-gray-100 dark:border-gray-700/60 text-sm self-start">
               {isAuth ? (
                 <p>
                   {dict.AiChat.greetings},{' '}
@@ -165,21 +163,7 @@ export default function AiChat() {
               )}
             </div>
 
-            {/* Вывод динамических сообщений */}
-            {messages.map((msg) => (
-              <div
-                key={msg.id}
-                className={`p-3.5 rounded-2xl text-sm max-w-[85%] shadow-sm border ${
-                  msg.sender === 'user'
-                    ? 'bg-[#0f3995] text-white self-end rounded-tr-none border-blue-800'
-                    : 'bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 self-start rounded-tl-none border-gray-100 dark:border-gray-700/60'
-                }`}
-              >
-                {msg.text}
-              </div>
-            ))}
-
-            {/* Вывод динамических сообщений */}
+            {/* Вывод динамических сообщений (Дубликат удален) */}
             {messages.map((msg) => (
               <div
                 key={msg.id}
@@ -194,7 +178,7 @@ export default function AiChat() {
             ))}
           </div>
 
-          {/* Форма ввода (Окно ввода) */}
+          {/* Форма ввода */}
           <form
             onSubmit={handleSubmit}
             className="p-3 bg-gray-200 dark:bg-gray-700 border-t border-gray-100 dark:border-gray-700 flex gap-2 items-center shrink-0"
