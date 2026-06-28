@@ -45,8 +45,8 @@ export default function AiChat() {
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     const webhookUrl = isProduction
-      ? 'https://n8n-production-9f7d.up.railway.app/webhook/SmyrtLoftAI'
-      : 'https://n8n-production-9f7d.up.railway.app/webhook-test/SmyrtLoftAI';
+      ? 'https://n8n-production-9f7d.up.railway.app/webhook/SmartyLoftAI'
+      : 'https://n8n-production-9f7d.up.railway.app/webhook-test/SmartyLoftAI';
 
     try {
       const response = await fetch(webhookUrl, {
