@@ -70,8 +70,7 @@ export default function AiChat() {
 
       // 3. Проверяем, есть ли вообще тело ответа, чтобы избежать Unexpected end of JSON
       const textResponse = await response.text();
-
-      console.log('Raw response:', textResponse); // для отладки
+      console.log('Raw response:', textResponse);
 
       let replyText = 'I got your message! / Я отримав твоє повідомлення!';
 
@@ -79,27 +78,36 @@ export default function AiChat() {
         try {
           let data = JSON.parse(textResponse);
 
-          // === Основная обработка для твоего n8n ===
+          // Если пришёл массив — берём первый элемент
           if (Array.isArray(data) && data.length > 0) {
-            data = data[0]; // берём первый элемент массива
+            data = data[0];
           }
 
-          if (data?.output) {
-            // output — это строка с JSON
-            if (typeof data.output === 'string') {
+          // Основная логика
+          if (data?.reply) {
+            let innerText = data.reply;
+
+            // Если внутри снова JSON-строка
+            if (typeof innerText === 'string') {
+              // Убираем одинарные кавычки и пробуем распарсить
+              innerText = innerText.replace(/'/g, '"'); // заменяем ' на "
+
               try {
-                const inner = JSON.parse(data.output);
-                replyText = inner.reply || inner.text || data.output;
+                const inner = JSON.parse(innerText);
+                replyText = inner.reply || inner.text || inner;
               } catch {
-                replyText = data.output; // если не JSON — берём как есть
+                // Если не распарсилось — берём как есть
+                replyText = innerText;
               }
             } else {
-              replyText = data.output;
+              replyText = innerText;
             }
-          } else if (data?.reply) {
-            replyText = data.reply;
-          } else if (typeof data === 'string') {
-            replyText = data;
+          } else if (data?.output) {
+            // На случай старого формата
+            replyText =
+              typeof data.output === 'string'
+                ? data.output.replace(/'/g, '"')
+                : data.output;
           }
         } catch (e) {
           console.error('JSON parse error:', e);
