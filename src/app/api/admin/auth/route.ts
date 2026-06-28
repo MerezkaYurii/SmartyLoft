@@ -11,7 +11,10 @@ export async function POST(request: Request) {
     // Проверяем, заданы ли переменные окружения
     if (!adminLogin || !adminPassword) {
       return NextResponse.json(
-        { error: 'Конфигурация авторизации отсутствует на сервере' },
+        {
+          error:
+            'Authorization configuration is missing on the server. / На сервері відсутня конфігурація авторизації.',
+        },
         { status: 500 },
       );
     }
@@ -33,13 +36,13 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json(
-      { error: 'Неверный логин или пароль' },
+      { error: 'Invalid login or password / Невірний логін або пароль' },
       { status: 401 },
     );
   } catch (error) {
-    console.error('ОШИБКА АВТОРИЗАЦИИ:', error);
+    console.error('AUTHORIZATION ERROR:', error);
     return NextResponse.json(
-      { error: 'Внутренняя ошибка сервера' },
+      { error: 'Internal server error / Внутрішня помилка сервера' },
       { status: 500 },
     );
   }

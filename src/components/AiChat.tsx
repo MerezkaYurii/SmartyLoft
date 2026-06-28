@@ -47,7 +47,7 @@ export default function AiChat() {
     try {
       // 2. Отправляем запрос на твой новый вебхук в n8n
       const response = await fetch(
-        ' https://n8n-production-9f7d.up.railway.app/webhook-test/SmyrtLoftAI',
+        ' https://n8n-production-9f7d.up.railway.app/webhook/SmyrtLoftAI',
         {
           method: 'POST',
           headers: {

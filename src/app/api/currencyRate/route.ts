@@ -41,7 +41,10 @@ export async function PUT(request: Request) {
     // Валидация: проверяем, что пришли числа и они больше нуля
     if (!uah || !pln || !usd || isNaN(uah) || isNaN(pln) || isNaN(usd)) {
       return NextResponse.json(
-        { error: 'Все курсы должны быть корректными числами' },
+        {
+          error:
+            'All rates must be valid numbers / Усі ставки мають бути дійсними числами.',
+        },
         { status: 400 },
       );
     }

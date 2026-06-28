@@ -44,12 +44,9 @@ export default function AdminDialogsDetailsPage() {
 
     const fetchDialog = async () => {
       try {
-        const response = await fetch(
-          `${window.location.origin}/api/dialogs/${dialogId}`,
-          {
-            cache: 'no-store',
-          },
-        );
+        const response = await fetch(`/api/dialogs/${dialogId}`, {
+          cache: 'no-store',
+        });
         if (!response.ok) throw new Error('Failed to fetch dialog');
 
         const data = await response.json();

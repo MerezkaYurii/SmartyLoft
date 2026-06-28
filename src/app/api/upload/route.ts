@@ -13,7 +13,10 @@ export async function POST(request: Request) {
     const file = formData.get('file') as File;
 
     if (!file) {
-      return NextResponse.json({ error: 'Файл не найден' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'File not found / Файл не знайдено' },
+        { status: 400 },
+      );
     }
 
     const bytes = await file.arrayBuffer();
@@ -21,22 +24,33 @@ export async function POST(request: Request) {
 
     // Указываем тип UploadApiResponse для возвращаемого промисом значения
     const data = await new Promise<UploadApiResponse>((resolve, reject) => {
-      cloudinary.uploader.upload_stream(
-        {
-          folder: 'smartyloft',
-          resource_type: 'auto',
-        },
-        (error, result) => {
-          if (error || !result) reject(error);
-          else resolve(result);
-        }
-      ).end(buffer);
+      cloudinary.uploader
+        .upload_stream(
+          {
+            folder: 'smartyloft',
+            resource_type: 'auto',
+          },
+          (error, result) => {
+            if (error || !result) reject(error);
+            else resolve(result);
+          },
+        )
+        .end(buffer);
     });
 
     // Теперь TypeScript точно знает, что у data есть свойство secure_url
     return NextResponse.json({ url: data.secure_url });
   } catch (error) {
-    console.error('Ошибка при загрузке в Cloudinary:', error);
-    return NextResponse.json({ error: 'Ошибка сервера при загрузке' }, { status: 500 });
+    console.error(
+      'Error while uploading to Cloudinary / Помилка при завантаженні в Cloudinary:',
+      error,
+    );
+    return NextResponse.json(
+      {
+        error:
+          'Server error while uploading / Помилка сервера при завантаженні',
+      },
+      { status: 500 },
+    );
   }
 }

@@ -1,3 +1,4 @@
+import { sendTelegramMessage } from '@/src/lib/telegram';
 import { getEnvVar } from '@/src/utils/getEnvVar';
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
@@ -66,14 +67,25 @@ export async function POST(request: Request) {
       to: to,
       subject: `📩 Нова заявка з сайту SmartyLoft`,
       text: `
-Ім’я / Name: ${name}
-Контакт / Contact: ${contact}
+Name: ${name}
+Contact: ${contact}
 
-Повідомлення / Message:
-${message || 'Не вказано'}
+Message:
+${message || 'Not specified'}
       `,
       attachments: attachments, // Добавляем файлы сюда
     });
+
+    try {
+      const tgMessage = `💬 *Нове повідомлення з форми!*
+👤 *Name:* ${name}
+📞 *Contact:* ${contact}
+📝 *Message:* ${message || 'Not specified'}`;
+
+      await sendTelegramMessage(tgMessage, 'message');
+    } catch (tgError) {
+      console.error('Telegram notification error in contact form:', tgError);
+    }
 
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (err) {

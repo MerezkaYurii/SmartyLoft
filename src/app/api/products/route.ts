@@ -17,9 +17,12 @@ export async function GET(request: Request) {
     const products = await Product.find(filter).sort({ createdAt: -1 });
     return NextResponse.json(products);
   } catch (error) {
-    console.error('Ошибка при получении товаров:', error);
+    console.error(
+      'Error when receiving goods / Помилка при отриманні товару:',
+      error,
+    );
     return NextResponse.json(
-      { error: 'Ошибка при получении данных' },
+      { error: 'Error while loading data / Помилка при отриманні даних' },
       { status: 500 },
     );
   }
@@ -43,7 +46,7 @@ export async function POST(request: Request) {
 
     if (!title || !price) {
       return NextResponse.json(
-        { error: 'Название и цена обязательны' },
+        { error: "Title and price are required / Назва та ціна обов'язкові" },
         { status: 400 },
       );
     }
@@ -62,11 +65,18 @@ export async function POST(request: Request) {
 
     return NextResponse.json(newProduct, { status: 201 });
   } catch (error) {
-    console.error('Ошибка при создании товара:', error);
+    console.error(
+      'Error while creating product / Помилка при створенні товару:',
+      error,
+    );
     const errorMessage =
-      error instanceof Error ? error.message : 'Неизвестная ошибка';
+      error instanceof Error
+        ? error.message
+        : 'Unknown error / Невідома помилка';
     return NextResponse.json(
-      { error: `Ошибка сервера при сохранении: ${errorMessage}` },
+      {
+        error: `Server error while saving / Помилка сервера при збереженні: ${errorMessage}`,
+      },
       { status: 500 },
     );
   }
@@ -82,7 +92,7 @@ export async function DELETE(request: Request) {
 
     if (!id) {
       return NextResponse.json(
-        { error: 'ID товара не указан' },
+        { error: 'Product ID not specified / ID товару не вказано' },
         { status: 400 },
       );
     }
@@ -91,21 +101,31 @@ export async function DELETE(request: Request) {
 
     if (!deletedProduct) {
       return NextResponse.json(
-        { error: 'Товар с таким ID не найден' },
+        {
+          error:
+            'Product with this ID not found / Товар з таким ID не знайдено',
+        },
         { status: 404 },
       );
     }
 
     return NextResponse.json(
-      { message: 'Товар успешно удален' },
+      { message: 'Product successfully deleted / Товар успішно видалено' },
       { status: 200 },
     );
   } catch (error) {
-    console.error('Ошибка при удалении товара:', error);
+    console.error(
+      'Error while deleting product / Помилка при видаленні товару:',
+      error,
+    );
     const errorMessage =
-      error instanceof Error ? error.message : 'Неизвестная ошибка сервера';
+      error instanceof Error
+        ? error.message
+        : 'Unknown error / Невідома помилка';
     return NextResponse.json(
-      { error: `Ошибка сервера при удалении: ${errorMessage}` },
+      {
+        error: `Server error while deleting / Помилка сервера при видаленні: ${errorMessage}`,
+      },
       { status: 500 },
     );
   }

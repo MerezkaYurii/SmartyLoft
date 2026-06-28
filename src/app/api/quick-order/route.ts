@@ -7,6 +7,7 @@ import CurrencyRate from '@/src/DataBase/models/CurrencyRate'; // ИМПОРТИ
 import mongoose from 'mongoose';
 import Stripe from 'stripe';
 import { getEnvVar } from '@/src/utils/getEnvVar';
+import { sendTelegramMessage } from '@/src/lib/telegram';
 
 const stripe = new Stripe(getEnvVar('STRIPE_SECRET_KEY') as string);
 
@@ -111,7 +112,22 @@ export async function POST(req: Request) {
       status: 'pending',
     });
 
-    const siteUrl = getEnvVar('NEXT_PUBLIC_SITE_URL') || 'http://localhost:3000';
+    // ДОБАВЛЯЕМ ОТПРАВКУ В TELEGRAM
+    try {
+      const tgMessage = `📦 *New quick order!*
+👤 *Name:* ${newOrder.name}
+📱 *Phone:* ${newOrder.phone}
+📝 *Comment:* ${newOrder.comment || 'no'}
+🪑 *Product:* ${productTitle}
+🌐 *Language:* ${currentLocale}`;
+
+      await sendTelegramMessage(tgMessage, 'order');
+    } catch (e) {
+      console.error('Telegram notification error:', e);
+    }
+
+    const siteUrl =
+      getEnvVar('NEXT_PUBLIC_SITE_URL') || 'http://localhost:3000';
 
     // Переводим локаль для Stripe (для украинского нужна 'uk')
     const stripeLocale = currentLocale === 'ua' ? 'auto' : currentLocale;
