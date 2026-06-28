@@ -66,13 +66,32 @@ export default function AiChat() {
         throw new Error('Network error');
       }
 
-      const data = await response.json();
+      // const data = await response.json();
+
+      // 3. Проверяем, есть ли вообще тело ответа, чтобы избежать Unexpected end of JSON
+      const textResponse = await response.text();
+
+      let replyText = 'I got your message! / Я отримав твоє повідомлення!';
+
+      if (textResponse.trim()) {
+        try {
+          const data = JSON.parse(textResponse);
+          if (data && data.reply) {
+            replyText = data.reply;
+          }
+        } catch (e) {
+          console.error(
+            'Не удалось распарсить JSON, текст ответа:',
+            textResponse,
+          );
+        }
+      }
 
       const aiMessage: ChatMessage = {
         id: crypto.randomUUID(),
         sender: 'ai',
-        text:
-          data.reply || 'I got your message! / Я отримав твоє повідомлення!',
+        text: replyText,
+        // data.reply || 'I got your message! / Я отримав твоє повідомлення!',
       };
       setMessages((prev) => [...prev, aiMessage]);
     } catch (error) {
