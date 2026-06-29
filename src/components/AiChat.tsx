@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useDictionary } from '../hooks/useDictionary';
 
@@ -18,9 +18,7 @@ export default function AiChat() {
   const [isLoading, setIsLoading] = useState(false);
   const dict = useDictionary();
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+
   const isProduction =
     typeof window !== 'undefined' &&
     window.location.origin === 'https://smarty-loft.vercel.app';
@@ -29,20 +27,25 @@ export default function AiChat() {
   const userName =
     session?.user?.name?.split(' ')[0] || session?.user?.email?.split('@')[0];
 
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim() || isLoading) return;
 
     const userText = message.trim();
     setMessage('');
-    setMessages((prev) => [...prev, userMessage]);
-    scrollToBottom();
+
     const userMessage: ChatMessage = {
       id: crypto.randomUUID(),
       sender: 'user',
       text: userText,
     };
-    setMessages((prev) => [...prev, userMessage]);
+
+    setMessages((prev) => [...prev, userMessage]); // Добавляем только один раз
+
     setIsLoading(true);
 
     const controller = new AbortController();
@@ -132,7 +135,6 @@ export default function AiChat() {
       };
 
       setMessages((prev) => [...prev, aiMessage]);
-      scrollToBottom();
     } catch (error) {
       console.error('Ошибка чата:', error);
       const errorMessage: ChatMessage = {

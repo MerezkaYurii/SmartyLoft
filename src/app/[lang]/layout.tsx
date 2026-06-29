@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://smarty-loft.vercel.app'),
   title: 'Smartyloft',
   icons: {
-    icon: '/LogoSmartyloft.svg',
+    icon: 'https://smarty-loft.vercel.app/LogoSmartyloft.svg',
   },
   openGraph: {
     title: 'Smartyloft',
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     siteName: 'Smartyloft',
     images: [
       {
-        url: '/LogoSmartyloftBgWhite.jpg',
+        url: 'https://smarty-loft.vercel.app/LogoSmartyloftBgWhite.jpg',
         width: 1200,
         height: 630,
         alt: 'Smartyloft preview',
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Smartyloft',
-    images: ['/LogoSmartyloftBgWhite.jpg'],
+    images: ['https://smarty-loft.vercel.app/LogoSmartyloftBgWhite.jpg'],
   },
 };
 
