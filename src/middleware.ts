@@ -16,15 +16,14 @@ export function middleware(request: NextRequest) {
     !pathname.startsWith('/api') &&
     !pathname.startsWith('/_next')
   ) {
-    const defaultLocale = i18n.defaultLocale || 'ua'; // Ваш дефолтный язык
+    const defaultLocale = i18n.defaultLocale || 'ua';
 
-    // Делаем REWRITE вместо REDIRECT
-    // URL в браузере останется прежним, но Next.js прочитает страницу из папки языка
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set('x-url', request.url);
+
     return NextResponse.rewrite(
-      new URL(
-        `/${defaultLocale}${pathname}${request.nextUrl.search}`,
-        request.url,
-      ),
+      new URL(`/${defaultLocale}${pathname}`, request.url),
+      { request: { headers: requestHeaders } },
     );
   }
 

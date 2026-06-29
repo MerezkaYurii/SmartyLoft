@@ -3,6 +3,26 @@ import CustomIdeaBlock from '@/src/components/CustomIdeaBlock';
 import HomePageSlider from '@/src/components/HomePageSlider';
 import ProductGrid from '@/src/components/ProductGrid';
 import { getDictionary } from '@/src/lib/get-dictionary';
+import { Metadata } from 'next';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}): Promise<Metadata> {
+  const { lang } = await params;
+
+  return {
+    metadataBase: new URL('https://smarty-loft.vercel.app'),
+    title: 'Smartyloft',
+    openGraph: {
+      title: 'Smartyloft',
+      url: `https://smarty-loft.vercel.app/`, // Всегда показываем чистый URL
+      images: [{ url: '/LogoSmartyloftBgWhite.jpg' }], // Относительный путь!
+      locale: lang === 'ua' ? 'uk_UA' : 'en_US',
+    },
+  };
+}
 
 export default async function Home({
   params,
