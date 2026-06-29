@@ -1,4 +1,3 @@
-import type { Metadata } from 'next';
 import { i18n } from '../../i18n-config';
 import '../globals.css';
 import Header from '../../components/Header';
@@ -11,34 +10,6 @@ import { SessionProvider } from 'next-auth/react';
 import { Toaster } from 'react-hot-toast';
 import { Roboto } from 'next/font/google';
 import AiChat from '@/src/components/AiChat';
-
-export const metadata: Metadata = {
-  metadataBase: new URL('https://smarty-loft.vercel.app'),
-  title: 'Smartyloft',
-  icons: {
-    icon: 'https://smarty-loft.vercel.app/LogoSmartyloft.svg',
-  },
-  openGraph: {
-    title: 'Smartyloft',
-    url: 'https://smarty-loft.vercel.app',
-    siteName: 'Smartyloft',
-    images: [
-      {
-        url: 'https://smarty-loft.vercel.app/LogoSmartyloftBgWhite.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Smartyloft preview',
-      },
-    ],
-    locale: 'en_US',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Smartyloft',
-    images: ['https://smarty-loft.vercel.app/LogoSmartyloftBgWhite.jpg'],
-  },
-};
 
 // 2. Настраиваем шрифт Roboto
 const roboto = Roboto({
