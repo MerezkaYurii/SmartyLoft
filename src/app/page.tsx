@@ -30,5 +30,5 @@ export const metadata: Metadata = {
 import { redirect } from 'next/navigation';
 
 export default function RootPage() {
-  redirect('/en');
+  redirect('');
 }
